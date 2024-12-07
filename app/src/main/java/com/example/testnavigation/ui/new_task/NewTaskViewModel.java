@@ -11,6 +11,8 @@ public class NewTaskViewModel extends ViewModel {
     public NewTaskViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is new Task fragment");
+
+        // Hi Momen Salem
     }
 
     public LiveData<String> getText() {
