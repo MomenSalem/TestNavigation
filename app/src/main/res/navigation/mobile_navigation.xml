@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_Today">
+
+    <fragment
+        android:id="@+id/nav_Today"
+        android:name="com.example.testnavigation.ui.today_task.TodayTaskFragment"
+        android:label="@string/menu_today"
+        tools:layout="@layout/fragment_today" />
+
+    <fragment
+        android:id="@+id/nav_newT"
+        android:name="com.example.testnavigation.ui.new_task.NewTaskFragment"
+        android:label="@string/menu_new_task"
+        tools:layout="@layout/fragment_new_task" />
+
+    <fragment
+        android:id="@+id/nav_allT"
+        android:name="com.example.testnavigation.ui.all_tasks.AllTasksFragment"
+        android:label="@string/menu_disp_all"
+        tools:layout="@layout/fragment_all_tasks" />
+
+    <fragment
+        android:id="@+id/nav_compT"
+        android:name="com.example.testnavigation.ui.completed_task.CompletedTaskFragment"
+        android:label="@string/menu_comp_task"
+        tools:layout="@layout/fragment_completed" />
+
+    <fragment
+        android:id="@+id/nav_searchT"
+        android:name="com.example.testnavigation.ui.search_task.SearchTaskFragment"
+        android:label="@string/menu_sear_task"
+        tools:layout="@layout/fragment_search_task" />
+
+    <fragment
+        android:id="@+id/nav_prof"
+        android:name="com.example.testnavigation.ui.profile.ProfileFragment"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_profile" />
+
+</navigation>
