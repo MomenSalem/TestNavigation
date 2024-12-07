@@ -12,7 +12,7 @@ public class NewTaskViewModel extends ViewModel {
         mText = new MutableLiveData<>();
         mText.setValue("This is new Task fragment");
 
-        // Add your code here
+        // n0rth
     }
 
     public LiveData<String> getText() {
