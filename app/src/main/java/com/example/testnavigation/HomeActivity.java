@@ -24,6 +24,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityHomeBinding binding;
+    DataBaseHelper dataBaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,11 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+
+
+
+
     }
 
     @Override
