@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.testnavigation.databinding.FragmentSearchTaskBinding;
 
@@ -18,14 +17,12 @@ public class SearchTaskFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SearchTaskViewModel newTaskViewModel =
-                new ViewModelProvider(this).get(SearchTaskViewModel.class);
 
         binding = FragmentSearchTaskBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textSearch;
-        newTaskViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        TextView textView = binding.textSearch;
+        textView.setText("Search Tasks");
         return root;
     }
 

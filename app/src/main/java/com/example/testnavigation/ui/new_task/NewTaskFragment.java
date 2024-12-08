@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.testnavigation.databinding.FragmentNewTaskBinding;
 
@@ -18,14 +17,11 @@ public class NewTaskFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NewTaskViewModel newTaskViewModel =
-                new ViewModelProvider(this).get(NewTaskViewModel.class);
-
         binding = FragmentNewTaskBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textNewTask;
-        newTaskViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        textView.setText("New Task");
         return root;
     }
 

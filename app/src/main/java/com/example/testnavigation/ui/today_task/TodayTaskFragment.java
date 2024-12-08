@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.testnavigation.databinding.FragmentTodayBinding;
 
@@ -18,14 +17,12 @@ public class TodayTaskFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        TodayTaskViewModel todayTaskViewModel =
-                new ViewModelProvider(this).get(TodayTaskViewModel.class);
 
         binding = FragmentTodayBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textToday;
-        todayTaskViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        TextView textView = binding.textToday;
+        textView.setText("Today's Tasks");
         return root;
     }
 

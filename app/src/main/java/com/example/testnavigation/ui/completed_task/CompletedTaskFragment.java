@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.testnavigation.databinding.FragmentCompletedBinding;
 
@@ -18,14 +17,12 @@ public class CompletedTaskFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        CompletedTaskViewModel completedTaskViewModel =
-                new ViewModelProvider(this).get(CompletedTaskViewModel.class);
 
         binding = FragmentCompletedBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textCompleted;
-        completedTaskViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        textView.setText("Completed Tasks");
         return root;
     }
 
