@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
                     // Check if this user is in the database
                     if (isUserExists(emailEditText, passwordEditText)){
+                        // go to the home page
                         goToHomeActivity();
                     }
-
                 }else {
                     showAlertDialog(Constants.EMPTY_EMAIL_ADDRESS_AND_PASSWORD);
                 }
@@ -64,9 +64,15 @@ public class MainActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToHomeActivity();
+                // go to the sign up page
+                goToSignUpActivity();
             }
         });
+    }
+
+    private void goToSignUpActivity() {
+        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+        startActivity(intent);
     }
 
     private void goToHomeActivity() {
