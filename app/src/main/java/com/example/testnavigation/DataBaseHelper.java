@@ -16,12 +16,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS user(EMAIL_ADDRESS TEXT PRIMARY KEY, FIRST_NAME TEXT, LAST_NAME TEXT, PASSWORD TEXT)");
-
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS tasks (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "task_title TEXT, " +
+                "task_description TEXT, " +
+                "due_date TEXT NOT NULL DEFAULT (datetime('now')), " + // Store date as String in ISO format (e.g., "2024-11-01 10:00")
+                "priority TEXT, " + // "High", "Medium", "Low"
+                "completion_status INTEGER, " + // 0 for incomplete, 1 for complete
+                "set_reminder INTEGER)" // 0 for false, 1 for true
+                );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
     }
+
+    // ------------------------- User Methods -------------------------
 
     public void insertUser(User user) {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
@@ -51,5 +61,47 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM user WHERE EMAIL_ADDRESS = ?", new String[]{emailAddress});
         return cursor.getCount() > 0;
+    }
+
+    // ------------------------- Task Methods -------------------------
+
+    // Insert task
+    public void insertTask(Task task) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("task_title", task.getTitle());
+        contentValues.put("task_description", task.getDescription());
+        contentValues.put("due_date", task.getDueDate());
+        contentValues.put("priority", task.getPriority());
+        contentValues.put("set_reminder", task.isSetReminder() ? 1 : 0);
+        contentValues.put("completion_status", task.isCompleted() ? 1 : 0);
+        db.insert("tasks", null, contentValues);
+    }
+
+    // Get all tasks
+    public Cursor getAllTasks() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM tasks", null);
+    }
+
+    // Get tasks by completion status
+    public Cursor getTasksByCompletionStatus(boolean completed) {
+        SQLiteDatabase db = getReadableDatabase();
+        int status = completed ? 1 : 0;
+        return db.rawQuery("SELECT * FROM tasks WHERE completion_status = ?", new String[]{String.valueOf(status)});
+    }
+
+    // Update task completion status
+    public void updateTaskCompletionStatus(int taskId, boolean completed) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("completion_status", completed ? 1 : 0);
+        db.update("tasks", contentValues, "id = ?", new String[]{String.valueOf(taskId)});
+    }
+
+    // Delete task
+    public void deleteTask(int taskId) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("tasks", "id = ?", new String[]{String.valueOf(taskId)});
     }
 }
