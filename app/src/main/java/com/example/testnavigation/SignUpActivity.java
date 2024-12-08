@@ -17,17 +17,23 @@ public class SignUpActivity extends AppCompatActivity {
 
     DataBaseHelper dataBaseHelper;
 
-    EditText emailAddressEditText = findViewById(R.id.emailAddressEditText);
-    EditText firstNameEditText = findViewById(R.id.firstNameEditText);
-    EditText lastNameEditText = findViewById(R.id.lastNameEditText);
-    EditText passwordEditText = findViewById(R.id.PasswordEditText);
-    EditText passwordConfirmEditText = findViewById(R.id.confirmPasswordEditText);
+    EditText emailAddressEditText;
+    EditText firstNameEditText;
+    EditText lastNameEditText;
+    EditText passwordEditText;
+    EditText passwordConfirmEditText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        emailAddressEditText = findViewById(R.id.emailAddressEditText);
+        firstNameEditText = findViewById(R.id.firstNameEditText);
+        lastNameEditText = findViewById(R.id.lastNameEditText);
+        passwordEditText = findViewById(R.id.PasswordEditText);
+        passwordConfirmEditText = findViewById(R.id.confirmPasswordEditText);
 
         passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         passwordConfirmEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
