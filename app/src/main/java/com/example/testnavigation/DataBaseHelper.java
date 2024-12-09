@@ -96,6 +96,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM tasks WHERE completion_status = 1 ORDER BY DATE(due_date) ASC;", null);
     }
 
+    public Cursor getTasksWithinDateRange(String startDate, String endDate) {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM tasks WHERE DATE(due_date) BETWEEN ? AND ? ORDER BY DATE(due_date) ASC";
+        return db.rawQuery(query, new String[]{startDate, endDate});
+    }
+
+
     // Get completed tasks
     public Cursor getTasksByPriority(String priority) {
         SQLiteDatabase db = getReadableDatabase();
