@@ -17,13 +17,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS user(EMAIL_ADDRESS TEXT PRIMARY KEY, FIRST_NAME TEXT, LAST_NAME TEXT, PASSWORD TEXT)");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS tasks (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " + // add foreign key of user ********************
                 "task_title TEXT, " +
                 "task_description TEXT, " +
-                "due_date TEXT NOT NULL DEFAULT (datetime('now')), " + // Store date as String in ISO format (e.g., "2024-11-01 10:00")
+                "due_date TEXT NOT NULL, " + // Store date as String in ISO format (e.g., "2024-11-01 10:00")
                 "priority TEXT, " + // "High", "Medium", "Low"
-                "completion_status INTEGER, " + // 0 for incomplete, 1 for complete
-                "set_reminder INTEGER)" // 0 for false, 1 for true
+                "set_reminder INTEGER, " + // 0 for false, 1 for true
+                "completion_status INTEGER)" // 0 for incomplete, 1 for complete
                 );
     }
 
@@ -78,11 +78,31 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.insert("tasks", null, contentValues);
     }
 
+    // Get tasks for today
+    public Cursor getTodayTasks() { // get tasks for specific user
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM tasks WHERE DATE(due_date) = DATE('now', 'localtime')", null);
+    }
+
     // Get all tasks
     public Cursor getAllTasks() {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM tasks", null);
+        return db.rawQuery("SELECT * FROM tasks ORDER BY DATE(due_date) ASC;", null);
     }
+
+    // Get all completed tasks
+    public Cursor getCompletedTasks() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM tasks WHERE completion_status = 1 ORDER BY DATE(due_date) ASC;", null);
+    }
+
+    // Get completed tasks
+    public Cursor getTasksByPriority(String priority) {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM tasks WHERE priority = ?", new String[]{priority});
+    }
+
+
 
     // Get tasks by completion status
     public Cursor getTasksByCompletionStatus(boolean completed) {

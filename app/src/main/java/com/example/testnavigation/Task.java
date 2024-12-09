@@ -5,8 +5,8 @@ public class Task {
     private String description;
     private String dueDate;
     private String priority;
-    private boolean isCompleted;
     private boolean setReminder;
+    private boolean isCompleted;
 
     public Task(String title, String description, String dueDate, String priority, boolean setReminder, boolean isCompleted) {
         this.title = title;

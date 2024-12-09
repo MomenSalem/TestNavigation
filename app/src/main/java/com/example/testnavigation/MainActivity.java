@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
                 dataBaseHelper.close();
             }
         }
-//        dataBaseHelper.insertTask(new Task("Task 88", "Description 1", "2023-11-15", "High", true, false));
-//        dataBaseHelper.insertTask(new Task("Task 89", "Description 2", "2023-11-20", "Medium", false, true));
+        dataBaseHelper.insertTask(new Task("HomeWork1", "Android", "2020-11-24 10:00", "High", true, true));
+//        dataBaseHelper.insertTask(new Task("T21", "Description 2", "2020-11-24 10:00", "Medium", false, true));
 
 
         // if the user press on submit, we should check if it is the data base

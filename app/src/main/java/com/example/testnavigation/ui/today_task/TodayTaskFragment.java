@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testnavigation.DataBaseHelper;
-import com.example.testnavigation.HomeActivity;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
 import com.example.testnavigation.databinding.FragmentTodayBinding;
@@ -45,7 +43,7 @@ public class TodayTaskFragment extends Fragment {
                 dataBaseHelper.close();
             }
         }
-        Cursor cursor = dataBaseHelper.getAllTasks();
+        Cursor cursor = dataBaseHelper.getTodayTasks();
         ArrayList<Task> taskList = new ArrayList<>();
 
         // Loop through the cursor and add tasks to the ArrayList
@@ -55,11 +53,11 @@ public class TodayTaskFragment extends Fragment {
                 String taskDescription = cursor.getString(2);
                 String dueDate = cursor.getString(3);
                 String priority = cursor.getString(4);
-                boolean completionStatus = cursor.getInt(5) == 1;
-                boolean setReminder = cursor.getInt(6) == 1;
+                boolean setReminder = cursor.getInt(5) == 1;
+                boolean completionStatus = cursor.getInt(6) == 1;
 
                 // Create a Task object and add it to the list
-                Task task = new Task(taskTitle, taskDescription, dueDate, priority, completionStatus, setReminder);
+                Task task = new Task(taskTitle, taskDescription, dueDate, priority, setReminder, completionStatus);
                 taskList.add(task);
             } while (cursor.moveToNext());
         }
