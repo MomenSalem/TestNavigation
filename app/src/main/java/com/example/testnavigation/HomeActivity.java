@@ -1,6 +1,5 @@
 package com.example.testnavigation;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,7 +10,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -53,8 +51,6 @@ public class HomeActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        Context context = this;
-
         // Setup Navigation Item Selected Listener
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -62,34 +58,12 @@ public class HomeActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_logout) {
-                    // Create an AlertDialog.Builder object
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                    // Set dialog title and message
-                    builder.setTitle("Logout Confirmation")
-                            .setMessage("Are you sure you want to log out?")  // The message asking the user to confirm
-
-                            // Positive button: Yes
-                            .setPositiveButton("Yes", (dialog, idDialog) -> {
-                                // Perform the logout action
-                                // Handle logout
-                                Toast.makeText(HomeActivity.this, "Logged out Successfully...", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear stack
-                                startActivity(intent);
-                                finish(); // Finish current activity (optional)
-                            })
-
-                            // Negative button: No
-                            .setNegativeButton("No", (dialog, idDialog) -> {
-                                // User canceled, just dismiss the dialog
-                                dialog.dismiss();
-                            });
-
-                    // Create and show the AlertDialog
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-
+                    // Handle logout
+                    Toast.makeText(HomeActivity.this, "Logging out...", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear stack
+                    startActivity(intent);
+                    finish(); // Finish current activity (optional)
                     return true;
                 }
                 navController.navigate(id); // This automatically finds the fragment based on the navigation graph

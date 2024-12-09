@@ -55,15 +55,39 @@ public class SignUpActivity extends AppCompatActivity {
 
         signUpButton.setOnClickListener(view -> {
 
-            if (!areEmptyFields(emailAddressEditText, firstNameEditText, lastNameEditText, passwordEditText, passwordConfirmEditText)) {
+            // check if the email not empty
+            if (!isEmpty(emailAddressEditText)) {
+                // Check if the user already exists
+                if (dataBaseHelper.checkUserExists(emailAddressEditText.getText().toString())) {
+                    showToastMessage(Constants.USER_ALREADY_EXISTS);
+                    // colorize the input in red
+                    colorizeInputInRed(emailAddressEditText);
+                    return;
+                }
+            }
 
-//                showAllUsers();
+            if (!areEmptyFields(firstNameEditText, lastNameEditText, passwordEditText, passwordConfirmEditText)) {
 
                 // check if the email address is valid and in the correct format
                 if (isEmailValid(emailAddressEditText)) {
+
+                    colorizeInputInWhite(emailAddressEditText);
+
                     if (isNameValid(firstNameEditText)) {
+
+                        // Set the background color to white
+                        colorizeInputInWhite(firstNameEditText);
+
                         if (isNameValid(lastNameEditText)) {
+
+                            // Set the background color to white
+                            colorizeInputInWhite(firstNameEditText);
+
                             if (isValidPassword(passwordEditText)) {
+
+                                // Set the background color to white
+                                colorizeInputInWhite(passwordEditText);
+
                                 if (areEquals(passwordEditText, passwordConfirmEditText)) {
 
                                     // Add the user to the database
@@ -71,28 +95,59 @@ public class SignUpActivity extends AppCompatActivity {
 
                                 } else {
                                     showAlertDialog(Constants.PASSWORD_CONFIRM_NOT_VALID);
+                                    colorizeInputInRed(passwordConfirmEditText);
                                 }
                             } else {
                                 showAlertDialog(Constants.PASSWORD_NOT_VALID);
+                                colorizeInputInRed(passwordEditText);
                             }
                         } else {
                             showAlertDialog(Constants.LAST_NAME_NOT_VALID);
+                            colorizeInputInRed(lastNameEditText);
                         }
                     } else {
                         showAlertDialog(Constants.FIRST_NAME_NOT_VALID);
+                        colorizeInputInRed(firstNameEditText);
                     }
                 } else {
                     showAlertDialog(Constants.EMAIL_NOT_VALID);
+                    colorizeInputInRed(emailAddressEditText);
                 }
             } else {
+
                 showAlertDialog(Constants.EMPTY_FIELDS);
+
+                // check if the email not empty
+                if (!isEmpty(emailAddressEditText)) {
+                    colorizeInputInWhite(emailAddressEditText);
+                } else {
+                    colorizeInputInRed(emailAddressEditText);
+                }
+                // check if the first name not empty
+                if (!isEmpty(firstNameEditText)) {
+                    colorizeInputInWhite(firstNameEditText);
+                } else {
+                    colorizeInputInRed(firstNameEditText);
+                }
+                // check if the last name not empty
+                if (!isEmpty(lastNameEditText)) {
+                    colorizeInputInWhite(lastNameEditText);
+                } else {
+                    colorizeInputInRed(lastNameEditText);
+                }
+                // check if the password not empty
+                if (!isEmpty(passwordEditText)) {
+                    colorizeInputInWhite(passwordEditText);
+                } else {
+                    colorizeInputInRed(passwordEditText);
+                }
+                // check if the password confirm not empty
+                if (!isEmpty(passwordConfirmEditText)) {
+                    colorizeInputInWhite(passwordConfirmEditText);
+                } else {
+                    colorizeInputInRed(passwordConfirmEditText);
+                }
             }
-
-            // clear the fields
-            clearFields();
-
-            // Go back to the main activity
-            goToMainActivity();
         });
 
         goToSignInButton.setOnClickListener(view -> {
@@ -101,17 +156,26 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    private void goToMainActivity() {
-        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+    private void colorizeInputInWhite(EditText text) {
+        text.setBackgroundColor(getResources().getColor(R.color.white));
+    }
+
+    private boolean isEmpty(EditText text) {
+        return text.getText().toString().isEmpty();
+    }
+
+    private void goToHomeActivity() {
+        Intent intent = new Intent(SignUpActivity.this, HomeActivity.class);
         startActivity(intent);
     }
 
-    private void clearFields() {
-        emailAddressEditText.setText("");
-        firstNameEditText.setText("");
-        lastNameEditText.setText("");
-        passwordEditText.setText("");
-        passwordConfirmEditText.setText("");
+    private void colorizeInputInRed(EditText text) {
+        text.setBackgroundColor(getResources().getColor(R.color.red));
+    }
+
+    private void goToMainActivity() {
+        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void addToDB(EditText emailAddressEditText, EditText firstNameEditText, EditText lastNameEditText, EditText passwordEditText) {
@@ -122,11 +186,6 @@ public class SignUpActivity extends AppCompatActivity {
         String lastName = lastNameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        // Check if the user already exists
-        if (dataBaseHelper.checkUserExists(emailAddress)) {
-            showToastMessage(Constants.USER_ALREADY_EXISTS);
-            return;
-        }
         // Make an object of the user
         User user = new User(emailAddress, firstName, lastName, password);
 
@@ -135,6 +194,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         //  Show a toast message
         showToastMessage(Constants.USER_ADDED);
+
+        // go to the home page
+        goToHomeActivity();
     }
 
     public boolean areEquals(EditText password, EditText passwordConfirm) {
@@ -155,15 +217,15 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private boolean isNameValid(EditText NameEditText) {
-        return NameEditText.getText().toString().length() > 5 && NameEditText.getText().toString().length() < 20;
+        return NameEditText.getText().toString().length() >= 5 && NameEditText.getText().toString().length() <= 20;
     }
 
     private boolean isEmailValid(EditText emailAddressEditText) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddressEditText.getText().toString()).matches();
     }
 
-    private boolean areEmptyFields(EditText emailAddressEditText, EditText firstNameEditText, EditText lastNameEditText, EditText passwordEditText, EditText passwordConfirmEditText) {
-        return emailAddressEditText.getText().toString().isEmpty() || firstNameEditText.getText().toString().isEmpty() || lastNameEditText.getText().toString().isEmpty() || passwordEditText.getText().toString().isEmpty()
+    private boolean areEmptyFields(EditText firstNameEditText, EditText lastNameEditText, EditText passwordEditText, EditText passwordConfirmEditText) {
+        return firstNameEditText.getText().toString().isEmpty() || lastNameEditText.getText().toString().isEmpty() || passwordEditText.getText().toString().isEmpty()
                 || passwordConfirmEditText.getText().toString().isEmpty();
     }
 

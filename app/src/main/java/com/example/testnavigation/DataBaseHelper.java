@@ -24,7 +24,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "priority TEXT, " + // "High", "Medium", "Low"
                 "set_reminder INTEGER, " + // 0 for false, 1 for true
                 "completion_status INTEGER)" // 0 for incomplete, 1 for complete
-                );
+        );
     }
 
     @Override
@@ -42,8 +42,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put("PASSWORD", user.getPassword());
         sqLiteDatabase.insert("user", null, contentValues);
 
-         // Delete
+//         Delete
 //        sqLiteDatabase.execSQL("DELETE FROM user");
+
 
     }
 

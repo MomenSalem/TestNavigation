@@ -121,7 +121,7 @@
             android:textColor="@color/linkColor" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/rememberMeCheckBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="serif-monospace"

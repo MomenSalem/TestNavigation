@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,20 +16,36 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     DataBaseHelper dataBaseHelper;
+    SharedPrefManager sharedPrefManager;
+    EditText emailEditText;
+    EditText passwordEditText;
+    CheckBox rememberMeCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Shared Preferences
+        sharedPrefManager = SharedPrefManager.getInstance(MainActivity.this);
+
         // Log in section
         Button signInButton = findViewById(R.id.signInButton);
-        EditText emailEditText = findViewById(R.id.emailEditText);
-        EditText passwordEditText = findViewById(R.id.passwordEditText);
+        emailEditText = findViewById(R.id.emailEditText);
+        passwordEditText = findViewById(R.id.passwordEditText);
+        // Make the password to be hidden
+        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
 
         // Sign up section
         Button signUpButton = findViewById(R.id.goToSignUpButton);
+
+        // Get the id of the 'Remember me' checkbox
+        rememberMeCheckBox = findViewById(R.id.rememberMeCheckBox);
+
+        // load the credentials from the shared preferences
+        loadCredentials();
+
 
         try {
             dataBaseHelper = new DataBaseHelper(MainActivity.this, "final_project_db", null, 1);
@@ -40,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
                 dataBaseHelper.close();
             }
         }
-        dataBaseHelper.insertTask(new Task("HomeWork1", "Android", "2020-11-24 10:00", "High", true, true));
-//        dataBaseHelper.insertTask(new Task("T21", "Description 2", "2020-11-24 10:00", "Medium", false, true));
+//        dataBaseHelper.insertTask(new Task("HomeWork1", "Android", "2020-11-24 10:00", "High", true, true));
+////        dataBaseHelper.insertTask(new Task("T21", "Description 2", "2020-11-24 10:00", "Medium", false, true));
 
 
         // if the user press on submit, we should check if it is the data base
@@ -50,14 +68,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 // check if the email and password are correct
-                if (!areEmptyEmailAddressAndPassword(emailEditText, passwordEditText)){
+                if (!areEmptyEmailAddressAndPassword(emailEditText, passwordEditText)) {
 
                     // Check if this user is in the database
-                    if (isUserExists(emailEditText, passwordEditText)){
+                    if (isUserExists(emailEditText, passwordEditText)) {
+
+                        // check if the user want to remember him
+                        if (rememberMeCheckBox.isChecked()) {
+                            sharedPrefManager.writeBoolean("rememberMe", true);
+                            sharedPrefManager.writeString("email", emailEditText.getText().toString());
+                            sharedPrefManager.writeString("password", passwordEditText.getText().toString());
+
+                        } else {
+                            sharedPrefManager.readBoolean("rememberMe", false);
+                        }
+
                         // go to the home page
                         goToHomeActivity();
                     }
-                }else {
+                } else {
                     showAlertDialog(Constants.EMPTY_EMAIL_ADDRESS_AND_PASSWORD);
                 }
             }
@@ -120,4 +149,13 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    private void loadCredentials() {
+        if (sharedPrefManager.readBoolean("rememberMe", false)) {
+            emailEditText.setText(sharedPrefManager.readString("email", "no email"));
+            passwordEditText.setText(sharedPrefManager.readString("password", "no password"));
+            rememberMeCheckBox.setChecked(true);
+        }
+    }
+
 }

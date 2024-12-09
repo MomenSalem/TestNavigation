@@ -11,5 +11,7 @@
     <color name="backgroundColor">#FFFFFFFF</color>
     <color name="primaryColor">#FF6200EE</color>
     <color name="linkColor">#FF03DAC5</color>
+    <color name="red">#FF0000</color>
+
 
 </resources>
