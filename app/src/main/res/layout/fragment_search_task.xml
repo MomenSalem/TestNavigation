@@ -5,28 +5,28 @@
     android:layout_height="match_parent"
     tools:context=".ui.today_task.TodayTaskFragment">
 
-    <!-- Start Date Input -->
-    <EditText
-        android:id="@+id/startDateEditText"
-        android:layout_width="0dp"
+    <!-- Start Date Button -->
+    <Button
+        android:id="@+id/startDateButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:layout_marginTop="16dp"
-        android:hint="Start Date (yyyy-MM-dd)"
-        android:inputType="date"
+        android:text="Select Start Date"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="10dp"/>
 
-    <!-- End Date Input -->
-    <EditText
-        android:id="@+id/endDateEditText"
-        android:layout_width="0dp"
+    <!-- End Date Button -->
+    <Button
+        android:id="@+id/endDateButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:layout_marginTop="16dp"
-        android:hint="End Date (yyyy-MM-dd)"
-        android:inputType="date"
-        app:layout_constraintTop_toBottomOf="@id/startDateEditText"
+        android:text="Select End Date"
+        app:layout_constraintTop_toBottomOf="@id/startDateButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="10dp"/>
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search"
-        app:layout_constraintTop_toBottomOf="@id/endDateEditText"
+        app:layout_constraintTop_toBottomOf="@id/endDateButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
