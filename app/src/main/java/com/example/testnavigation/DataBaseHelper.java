@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 public class DataBaseHelper extends SQLiteOpenHelper {
@@ -22,6 +23,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "task_description TEXT, " +
                 "due_date TEXT NOT NULL, " + // Store date as String in ISO format (e.g., "2024-11-01 10:00")
                 "priority TEXT, " + // "High", "Medium", "Low"
+                "can_edit INTEGER, " + // 0 for false, 1 for true
+                "can_delete INTEGER, " + // 0 for false, 1 for true
                 "set_reminder INTEGER, " + // 0 for false, 1 for true
                 "completion_status INTEGER)" // 0 for incomplete, 1 for complete
         );
@@ -67,16 +70,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // ------------------------- Task Methods -------------------------
 
     // Insert task
-    public void insertTask(Task task) {
+    public void insertTask(String task_title, String task_description, String due_date, String priority, boolean can_edit, boolean can_delete, boolean set_reminder, boolean completion_status) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("task_title", task.getTitle());
-        contentValues.put("task_description", task.getDescription());
-        contentValues.put("due_date", task.getDueDate());
-        contentValues.put("priority", task.getPriority());
-        contentValues.put("set_reminder", task.isSetReminder() ? 1 : 0);
-        contentValues.put("completion_status", task.isCompleted() ? 1 : 0);
-        db.insert("tasks", null, contentValues);
+        contentValues.put("task_title", task_title);
+        contentValues.put("task_description", task_description);
+        contentValues.put("due_date", due_date);
+        contentValues.put("priority", priority);
+        contentValues.put("can_edit", can_edit ? 1 : 0);
+        contentValues.put("can_delete", can_delete ? 1 : 0);
+        contentValues.put("set_reminder", set_reminder ? 1 : 0);
+        contentValues.put("completion_status", completion_status ? 1 : 0);
+        long id = db.insert("tasks", null, contentValues);
+        new Task(id, task_title, task_description, due_date, priority, can_edit, can_delete, set_reminder, completion_status);
+        db.close();
+//        db.execSQL("DELETE FROM tasks");
     }
 
     // Get tasks for today
@@ -128,8 +136,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     // Delete task
-    public void deleteTask(int taskId) {
-        SQLiteDatabase db = getWritableDatabase();
+    public void deleteTask(long taskId) {
+        SQLiteDatabase db = this.getWritableDatabase();
         db.delete("tasks", "id = ?", new String[]{String.valueOf(taskId)});
+        db.close();
     }
 }

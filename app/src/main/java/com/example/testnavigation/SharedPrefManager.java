@@ -9,7 +9,7 @@ public class SharedPrefManager {
     private static SharedPrefManager ourInstance = null;
     private static SharedPreferences sharedPreferences = null;
     private static SharedPreferences.Editor editor = null;
-    static SharedPrefManager getInstance(Context context) {
+    public static SharedPrefManager getInstance(Context context) {
         if (ourInstance != null) {
             return ourInstance;
         }

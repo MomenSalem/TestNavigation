@@ -29,10 +29,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class SearchTaskFragment extends Fragment {
+public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
 
     private FragmentSearchTaskBinding binding;
     DataBaseHelper dataBaseHelper;
+    ArrayList<Task> taskList;
+    TaskAdapter adapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,26 +80,42 @@ public class SearchTaskFragment extends Fragment {
             }
 
             try {
-                ArrayList<Task> taskList = new ArrayList<>();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date startDate = sdf.parse(selectedStartDate[0]);
+                Date endDate = sdf.parse(selectedEndDate[0]);
+
+                if (endDate.before(startDate)) { // Check if endDate is earlier than startDate
+                    Toast.makeText(context, "End date must be greater than or equal to the start date", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                taskList = new ArrayList<>();
 
                 // Query the database for tasks within the date range
                 Cursor cursor = dataBaseHelper.getTasksWithinDateRange(selectedStartDate[0], selectedEndDate[0]);
 
                 // Process the cursor and add tasks to the list
                 while (cursor.moveToNext()) {
+                    long id = cursor.getLong(0);
                     String taskTitle = cursor.getString(1);
                     String taskDescription = cursor.getString(2);
                     String dueDate = cursor.getString(3);
                     String priority = cursor.getString(4);
-                    boolean setReminder = cursor.getInt(5) == 1;
-                    boolean completionStatus = cursor.getInt(6) == 1;
+                    boolean canEdit = cursor.getInt(5) == 1;
+                    boolean canDelete = cursor.getInt(6) == 1;
+                    boolean setReminder = cursor.getInt(7) == 1;
+                    boolean completionStatus = cursor.getInt(8) == 1;
 
-                    Task task = new Task(taskTitle, taskDescription, dueDate, priority, setReminder, completionStatus);
+                    Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
                     taskList.add(task);
                 }
 
+                // If no tasks are found, show a message
+                if (taskList.isEmpty()) {
+                    Toast.makeText(context, "No tasks found for the selected date period", Toast.LENGTH_SHORT).show();
+                }
+
                 // Set up the RecyclerView and adapter
-                TaskAdapter adapter = new TaskAdapter(context, taskList);
+                adapter = new TaskAdapter(context, taskList, this);
                 RecyclerView recyclerView = binding.recyclerView;
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -123,6 +141,32 @@ public class SearchTaskFragment extends Fragment {
                 calendar.get(Calendar.DAY_OF_MONTH));
 
         datePickerDialog.show();
+    }
+
+    @Override
+    public void onEditClicked(Task task) {
+        Toast.makeText(this.getContext(), "Search--Edit button clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDeleteClicked(Task task) {
+        // Delete task from the database
+        dataBaseHelper.deleteTask(task.getId());
+
+        // Remove task from the RecyclerView's data source
+        int position = taskList.indexOf(task);
+        if (position != -1) {
+            taskList.remove(position);
+            adapter.notifyItemRemoved(position); // Notify the adapter about the removal
+        }
+
+        // Show a confirmation Toast
+        Toast.makeText(this.getContext(), "Task deleted Successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onShareClicked(Task task) {
+
     }
 
     interface DatePickerCallback {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -12,6 +13,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,8 +62,17 @@ public class MainActivity extends AppCompatActivity {
                 dataBaseHelper.close();
             }
         }
-//        dataBaseHelper.insertTask(new Task("HomeWork1", "Android", "2020-11-24 10:00", "High", true, true));
-////        dataBaseHelper.insertTask(new Task("T21", "Description 2", "2020-11-24 10:00", "Medium", false, true));
+//        // Get the current local time
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        // Format the time as a string (e.g., "2024-12-11 15:30:45")
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        String formattedTime = now.format(formatter);
+
+        dataBaseHelper.insertTask("Midterm100", "Computer Vision", "2024-12-11 06:00", "High", true, true, false, true);
+//        dataBaseHelper.insertTask("Midterm101", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
+//        dataBaseHelper.insertTask("Midterm102", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
+//        dataBaseHelper.insertTask("Midterm103", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
 
 
         // if the user press on submit, we should check if it is the data base
@@ -72,13 +85,13 @@ public class MainActivity extends AppCompatActivity {
 
                     // Check if this user is in the database
                     if (isUserExists(emailEditText, passwordEditText)) {
-
+                        // save the user primary key to be used in home activity
+                        sharedPrefManager.writeString("user_primary_key", emailEditText.getText().toString());
                         // check if the user want to remember him
                         if (rememberMeCheckBox.isChecked()) {
                             sharedPrefManager.writeBoolean("rememberMe", true);
                             sharedPrefManager.writeString("email", emailEditText.getText().toString());
                             sharedPrefManager.writeString("password", passwordEditText.getText().toString());
-
                         } else {
                             sharedPrefManager.readBoolean("rememberMe", false);
                         }

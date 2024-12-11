@@ -3,6 +3,7 @@ package com.example.testnavigation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityHomeBinding binding;
+    SharedPrefManager sharedPrefManager;
     DataBaseHelper dataBaseHelper;
 
     @Override
@@ -54,6 +56,10 @@ public class HomeActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         Context context = this;
+
+//        sharedPrefManager = SharedPrefManager.getInstance(this);
+//        String userid = sharedPrefManager.readString("user_primary_key", "no way");
+//        Log.d("user", "The user id is = " + userid);
 
         // Setup Navigation Item Selected Listener
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
