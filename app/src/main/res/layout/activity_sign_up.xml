@@ -171,7 +171,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/linkColor"
+            android:background="@drawable/button_border"
             android:text="Sign up"
             android:textColor="@color/black"
             android:textColorHint="@color/linkColor" />
@@ -181,7 +181,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/linkColor"
+            android:background="@drawable/button_border"
             android:text="Already have an account ?"
             android:textColor="@color/black" />
     </LinearLayout>
