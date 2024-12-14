@@ -21,7 +21,6 @@
 
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="stateHidden"
             android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.TestNavigation.NoActionBar">
