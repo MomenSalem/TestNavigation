@@ -30,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        View rootView = findViewById(R.id.); // Replace 'rootLayout' with the ID of your root view
+//        rootView.requestFocus();
+
+
         // Shared Preferences
         sharedPrefManager = SharedPrefManager.getInstance(MainActivity.this);
 
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //        String formattedTime = now.format(formatter);
 
-        dataBaseHelper.insertTask("Midterm100", "Computer Vision", "2024-12-11 06:00", "High", true, true, false, true);
+//        dataBaseHelper.insertTask("Midterm100", "Computer Vision", "2024-12-11 06:00", "High", true, true, false, true);
 //        dataBaseHelper.insertTask("Midterm101", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
 //        dataBaseHelper.insertTask("Midterm102", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
 //        dataBaseHelper.insertTask("Midterm103", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
@@ -81,27 +85,29 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 // check if the email and password are correct
-                if (!areEmptyEmailAddressAndPassword(emailEditText, passwordEditText)) {
+//                if (!areEmptyEmailAddressAndPassword(emailEditText, passwordEditText)) {
 
                     // Check if this user is in the database
-                    if (isUserExists(emailEditText, passwordEditText)) {
+//                    if (isUserExists(emailEditText, passwordEditText)) {
+
                         // save the user primary key to be used in home activity
                         sharedPrefManager.writeString("user_primary_key", emailEditText.getText().toString());
-                        // check if the user want to remember him
+
+                        // check if the user want to be remembered
                         if (rememberMeCheckBox.isChecked()) {
-                            sharedPrefManager.writeBoolean("rememberMe", true);
-                            sharedPrefManager.writeString("email", emailEditText.getText().toString());
-                            sharedPrefManager.writeString("password", passwordEditText.getText().toString());
+                            saveCredentials();
                         } else {
                             sharedPrefManager.readBoolean("rememberMe", false);
                         }
 
                         // go to the home page
                         goToHomeActivity();
-                    }
-                } else {
-                    showAlertDialog(Constants.EMPTY_EMAIL_ADDRESS_AND_PASSWORD);
-                }
+//                    }
+//                }
+//
+//               else {
+//                    showAlertDialog(Constants.EMPTY_EMAIL_ADDRESS_AND_PASSWORD);
+//                }
             }
         });
 
@@ -170,5 +176,13 @@ public class MainActivity extends AppCompatActivity {
             rememberMeCheckBox.setChecked(true);
         }
     }
+
+    private void saveCredentials() {
+        sharedPrefManager.writeBoolean("rememberMe", true);
+        sharedPrefManager.writeString("email", emailEditText.getText().toString());
+        sharedPrefManager.writeString("password", passwordEditText.getText().toString());
+
+    }
+
 
 }
