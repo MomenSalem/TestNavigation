@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
     private FragmentSearchTaskBinding binding;
     DataBaseHelper dataBaseHelper;
     ArrayList<Task> taskList;
+    ArrayList<Task> filteredTaskList;
     TaskAdapter adapter;
 
     @Override
@@ -54,6 +56,9 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
         // Initialize variables to store dates
         final String[] selectedStartDate = {null};
         final String[] selectedEndDate = {null};
+
+        RecyclerView recyclerView = binding.recyclerView;
+        SearchView searchView = binding.searchView;
 
         // Configure Start Date Button
         binding.startDateButton.setOnClickListener(v -> {
@@ -109,23 +114,62 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
                     taskList.add(task);
                 }
 
+                filteredTaskList = new ArrayList<>(taskList);
+
                 // If no tasks are found, show a message
                 if (taskList.isEmpty()) {
                     Toast.makeText(context, "No tasks found for the selected date period", Toast.LENGTH_SHORT).show();
                 }
-
+                searchView.setVisibility(View.VISIBLE);
                 // Set up the RecyclerView and adapter
-                adapter = new TaskAdapter(context, taskList, this);
-                RecyclerView recyclerView = binding.recyclerView;
+                adapter = new TaskAdapter(context, filteredTaskList, this);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                setupSearchView(searchView);
 
             } catch (Exception e) {
                 Toast.makeText(context, "Error while fetching tasks: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
+
         return root;
+    }
+
+    private void setupSearchView(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterTasks(newText);
+                return true;
+            }
+        });
+    }
+
+    private void filterTasks(String text) {
+        filteredTaskList.clear();
+
+        if (text.isEmpty()) {
+            filteredTaskList.addAll(taskList);
+        } else {
+            text = text.toLowerCase();
+            for (Task task : taskList) {
+                if (task.getTitle().toLowerCase().contains(text) || task.getDescription().toLowerCase().contains(text)) {
+                    filteredTaskList.add(task);
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+
+        if (filteredTaskList.isEmpty()) {
+            Toast.makeText(getContext(), "No tasks found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showDatePickerDialog(DatePickerCallback callback) {
@@ -157,16 +201,23 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
         int position = taskList.indexOf(task);
         if (position != -1) {
             taskList.remove(position);
+            filteredTaskList.remove(position); // Remove from the filtered list as well
             adapter.notifyItemRemoved(position); // Notify the adapter about the removal
         }
 
         // Show a confirmation Toast
-        Toast.makeText(this.getContext(), "Task deleted Successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getContext(), "Task " + task.getTitle() + " deleted Successfully", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onShareClicked(Task task) {
 
+    }
+
+    @Override
+    public void onCheckBoxClicked(Task task) {
+        dataBaseHelper.updateTaskCompletionStatus(task.getId(), task.isCompleted()); // Update in DB
+        Toast.makeText(getContext(), task.isCompleted() ? "Task " + task.getTitle() + " marked as completed" : "Task " + task.getTitle() + " marked as incomplete", Toast.LENGTH_SHORT).show();
     }
 
     interface DatePickerCallback {

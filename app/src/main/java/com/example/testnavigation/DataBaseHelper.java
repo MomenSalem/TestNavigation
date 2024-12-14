@@ -119,7 +119,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-
     // Get tasks by completion status
     public Cursor getTasksByCompletionStatus(boolean completed) {
         SQLiteDatabase db = getReadableDatabase();
@@ -128,12 +127,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     // Update task completion status
-    public void updateTaskCompletionStatus(int taskId, boolean completed) {
+    public void updateTaskCompletionStatus(long taskId, boolean completed) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("completion_status", completed ? 1 : 0);
         db.update("tasks", contentValues, "id = ?", new String[]{String.valueOf(taskId)});
+        db.close();
     }
+
 
     // Delete task
     public void deleteTask(long taskId) {

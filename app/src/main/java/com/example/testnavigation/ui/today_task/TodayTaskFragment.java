@@ -1,10 +1,14 @@
 package com.example.testnavigation.ui.today_task;
 
 import android.database.Cursor;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,17 +17,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testnavigation.DataBaseHelper;
+import com.example.testnavigation.R;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
 import com.example.testnavigation.databinding.FragmentTodayBinding;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import nl.dionsegijn.konfetti.core.Party;
+import nl.dionsegijn.konfetti.core.PartyFactory;
+import nl.dionsegijn.konfetti.core.emitter.Emitter;
+import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
+import nl.dionsegijn.konfetti.core.models.Shape;
+import nl.dionsegijn.konfetti.core.models.Size;
+import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
 
     private FragmentTodayBinding binding;
     DataBaseHelper dataBaseHelper;
     ArrayList<Task> taskList;
+    ArrayList<Task> filteredTaskList;
     TaskAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -33,6 +48,7 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
         View root = binding.getRoot();
 
         RecyclerView recyclerView = binding.recyclerView;
+        SearchView searchView = binding.searchView;
 
         try {
             dataBaseHelper = new DataBaseHelper(this.getContext(), "final_project_db", null, 1);
@@ -66,23 +82,67 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
                 taskList.add(task);
             } while (cursor.moveToNext());
         }
-
+        filteredTaskList = new ArrayList<>(taskList);
         cursor.close();
-//        // Add some sample tasks to the list
-//        taskList.add(new Task("Task 1", "Description 1", "2024-11-1", "High", false, false));
-//        taskList.add(new Task("Task 2", "Description 2", "2024-11-2", "Medium", false, true));
-//        taskList.add(new Task("Task 3", "Description 3", "2024-11-3", "Low", false, false));
-//        taskList.add(new Task("Task 4", "Description 4", "2024-11-4", "High", false, true));
-//        taskList.add(new Task("Task 5", "Description 5", "2024-11-5", "Medium", false, false));
-
-
         // Set up the RecyclerView and adapter
-        adapter = new TaskAdapter(this.getContext(), taskList, this);
+        adapter = new TaskAdapter(this.getContext(), filteredTaskList, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-
+        checkAllTasksCompleted();
+        setupSearchView(searchView);
         return root;
     }
+
+    private void setupSearchView(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterTasks(newText);
+                return true;
+            }
+        });
+    }
+
+    private void checkAllTasksCompleted() {
+        boolean allCompleted = true;
+        for (Task task : filteredTaskList) { // todayTasks should be the list of today's tasks
+            if (!task.isCompleted()) {
+                allCompleted = false;
+                break;
+            }
+        }
+
+        if (allCompleted && !filteredTaskList.isEmpty()) {
+            showCongratulations();
+        }
+    }
+
+    private void showCongratulations() {
+        Toast.makeText(getContext(), "Congratulations! All tasks for today are completed!", Toast.LENGTH_SHORT).show();
+        playAnimation();
+    }
+
+    private void playAnimation() {
+        KonfettiView konfettiView = binding.konfettiView;
+
+        EmitterConfig emitterConfig = new Emitter(300, TimeUnit.MILLISECONDS).max(300);
+        konfettiView.start(
+                new PartyFactory(emitterConfig)
+                        .shapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                        .spread(360)
+                        .sizes(new Size(8, 50, 20))
+                        .timeToLive(6000)
+                        .fadeOutEnabled(true)
+                        .build()
+        );
+    }
+
+
 
     @Override
     public void onDestroyView() {
@@ -95,6 +155,27 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
         Toast.makeText(this.getContext(), "Today--Edit button clicked", Toast.LENGTH_SHORT).show();
     }
 
+    private void filterTasks(String text) {
+        filteredTaskList.clear();
+
+        if (text.isEmpty()) {
+            filteredTaskList.addAll(taskList);
+        } else {
+            text = text.toLowerCase();
+            for (Task task : taskList) {
+                if (task.getTitle().toLowerCase().contains(text) || task.getDescription().toLowerCase().contains(text)) {
+                    filteredTaskList.add(task);
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+
+        if (filteredTaskList.isEmpty()) {
+            Toast.makeText(getContext(), "No tasks found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onDeleteClicked(Task task) {
         // Delete task from the database
@@ -104,15 +185,23 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
         int position = taskList.indexOf(task);
         if (position != -1) {
             taskList.remove(position);
+            filteredTaskList.remove(position); // Remove from the filtered list as well
             adapter.notifyItemRemoved(position); // Notify the adapter about the removal
         }
 
         // Show a confirmation Toast
-        Toast.makeText(this.getContext(), "Task deleted Successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getContext(), "Task " + task.getTitle() + " deleted Successfully", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onShareClicked(Task task) {
 
+    }
+
+    @Override
+    public void onCheckBoxClicked(Task task) {
+        dataBaseHelper.updateTaskCompletionStatus(task.getId(), task.isCompleted()); // Update in DB
+        Toast.makeText(getContext(), task.isCompleted() ? "Task " + task.getTitle() + " marked as completed" : "Task " + task.getTitle() + " marked as incomplete", Toast.LENGTH_SHORT).show();
+        checkAllTasksCompleted();
     }
 }

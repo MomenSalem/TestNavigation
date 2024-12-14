@@ -69,7 +69,10 @@ public class MainActivity extends AppCompatActivity {
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //        String formattedTime = now.format(formatter);
 
-        dataBaseHelper.insertTask("Midterm100", "Computer Vision", "2024-12-11 06:00", "High", true, true, false, true);
+//        dataBaseHelper.insertTask("Playing Basketball", "bol", "2024-12-14 08:00", "High", true, true, false, true);
+//        dataBaseHelper.insertTask("Playing Basketball", "bol", "2024-12-13 08:00", "High", true, true, false, true);
+//        dataBaseHelper.insertTask("Playing Basketball", "bol", "2024-12-12 08:00", "High", true, true, false, true);
+//        dataBaseHelper.insertTask("Playing Basketball", "bol", "2024-12-11 08:00", "High", true, true, false, true);
 //        dataBaseHelper.insertTask("Midterm101", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
 //        dataBaseHelper.insertTask("Midterm102", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
 //        dataBaseHelper.insertTask("Midterm103", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);

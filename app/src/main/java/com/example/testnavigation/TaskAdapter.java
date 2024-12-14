@@ -62,7 +62,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             deleteButton = itemView.findViewById(R.id.btnDelete);
             shareButton = itemView.findViewById(R.id.btnShare);
             taskPriority = itemView.findViewById(R.id.taskPriority);
-            completionStatus = itemView.findViewById(R.id.completionStatus);
+            completionStatus = itemView.findViewById(R.id.completionStatusBtn);
         }
         public void bind(Task task, final OnTaskInteractionListener listener) {
             taskTitle.setText(task.getTitle());
@@ -102,6 +102,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                         .show();
             });
 
+            completionStatus.setOnClickListener(v -> {
+                task.setCompleted(completionStatus.isChecked());
+                listener.onCheckBoxClicked(task);
+            });
 
         }
     }
@@ -109,6 +113,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         void onEditClicked(Task task);
         void onDeleteClicked(Task task);
         void onShareClicked(Task task);
+        void onCheckBoxClicked(Task task);
+    }
+
+    public Task getTask(int position) {
+        return taskList.get(position);
     }
 
 }

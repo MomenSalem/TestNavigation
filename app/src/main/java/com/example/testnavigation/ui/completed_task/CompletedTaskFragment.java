@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testnavigation.DataBaseHelper;
+import com.example.testnavigation.DateSeparatorDecoration;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
 import com.example.testnavigation.databinding.FragmentCompletedBinding;
@@ -25,6 +27,7 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
     private FragmentCompletedBinding binding;
     DataBaseHelper dataBaseHelper;
     ArrayList<Task> taskList;
+    ArrayList<Task> filteredTaskList;
     TaskAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -34,6 +37,8 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
         View root = binding.getRoot();
 
         RecyclerView recyclerView = binding.recyclerView;
+        SearchView searchView = binding.searchView;
+        recyclerView.addItemDecoration(new DateSeparatorDecoration(this.getContext()));
 
         try {
             dataBaseHelper = new DataBaseHelper(this.getContext(), "final_project_db", null, 1);
@@ -67,15 +72,31 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
                 taskList.add(task);
             } while (cursor.moveToNext());
         }
-
+        filteredTaskList = new ArrayList<>(taskList);
         cursor.close();
 
         // Set up the RecyclerView and adapter
-        adapter = new TaskAdapter(this.getContext(), taskList, this);
+        adapter = new TaskAdapter(this.getContext(), filteredTaskList, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
+        setupSearchView(searchView);
         return root;
+    }
+
+    private void setupSearchView(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterTasks(newText);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -89,6 +110,27 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
         Toast.makeText(this.getContext(), "Comp--Edit button clicked", Toast.LENGTH_SHORT).show();
     }
 
+    private void filterTasks(String text) {
+        filteredTaskList.clear();
+
+        if (text.isEmpty()) {
+            filteredTaskList.addAll(taskList);
+        } else {
+            text = text.toLowerCase();
+            for (Task task : taskList) {
+                if (task.getTitle().toLowerCase().contains(text) || task.getDescription().toLowerCase().contains(text)) {
+                    filteredTaskList.add(task);
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();
+
+        if (filteredTaskList.isEmpty()) {
+            Toast.makeText(getContext(), "No tasks found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onDeleteClicked(Task task) {
         // Delete task from the database
@@ -98,15 +140,28 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
         int position = taskList.indexOf(task);
         if (position != -1) {
             taskList.remove(position);
+            filteredTaskList.remove(position); // Remove from the filtered list as well
             adapter.notifyItemRemoved(position); // Notify the adapter about the removal
         }
 
         // Show a confirmation Toast
-        Toast.makeText(this.getContext(), "Task deleted Successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getContext(), "Task " + task.getTitle() + " deleted Successfully", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onShareClicked(Task task) {
 
+    }
+
+    @Override
+    public void onCheckBoxClicked(Task task) {
+        dataBaseHelper.updateTaskCompletionStatus(task.getId(), task.isCompleted()); // Update in DB
+        Toast.makeText(getContext(), task.isCompleted() ? "Task " + task.getTitle() + " marked as completed" : "Task " + task.getTitle() + " marked as incomplete", Toast.LENGTH_SHORT).show();
+        int position = taskList.indexOf(task);
+        if (position != -1) {
+            taskList.remove(position);
+            filteredTaskList.remove(position); // Remove from the filtered list as well
+            adapter.notifyItemRemoved(position); // Notify the adapter about the removal
+        }
     }
 }
