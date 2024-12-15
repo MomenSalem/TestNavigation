@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.testnavigation.ui.profile.ProfileFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -33,6 +34,12 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get the data from the intent
+        Intent intent = getIntent();
+        String userid = intent.getStringExtra("user_primary_key");
+
+
 
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -98,6 +105,17 @@ public class HomeActivity extends AppCompatActivity {
 
                     return true;
                 }
+
+                // check if the navigation item is the profile item
+                if (id == R.id.nav_prof) {
+                    // send the data to the profile fragment
+                    Bundle bundle = new Bundle();
+                    bundle.putString("user_primary_key", userid);
+                    ProfileFragment profileFragment = new ProfileFragment();
+                    profileFragment.setArguments(bundle);
+                }
+
+
                 navController.navigate(id); // This automatically finds the fragment based on the navigation graph
                 drawer.closeDrawer(GravityCompat.START); // Close the drawer after selection
                 return true;

@@ -166,6 +166,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void goToHomeActivity() {
         Intent intent = new Intent(SignUpActivity.this, HomeActivity.class);
+        intent.putExtra("user_primary_key", emailAddressEditText.getText().toString());
         startActivity(intent);
     }
 

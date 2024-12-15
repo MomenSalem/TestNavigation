@@ -121,7 +121,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goToHomeActivity() {
+        // send the user primary key to the home activity when create the intent
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.putExtra("user_primary_key", emailEditText.getText().toString());
         startActivity(intent);
     }
 

@@ -142,4 +142,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.delete("tasks", "id = ?", new String[]{String.valueOf(taskId)});
         db.close();
     }
+
+    public void updateUser(String id, User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("EMAIL_ADDRESS", user.getEmailAddress());
+        contentValues.put("PASSWORD", user.getPassword());
+        db.update("user", contentValues, "EMAIL_ADDRESS = ?", new String[]{id});
+        db.close();
+    }
 }
