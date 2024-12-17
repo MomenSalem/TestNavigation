@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,14 +26,23 @@ public class MainActivity extends AppCompatActivity {
     EditText emailEditText;
     EditText passwordEditText;
     CheckBox rememberMeCheckBox;
+    Switch darkModeSwitch;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // Shared Preferences
         sharedPrefManager = SharedPrefManager.getInstance(MainActivity.this);
+        darkModeSwitch = findViewById(R.id.darkThemeSwitch);
+        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
+
+        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            applyDarkMode(isChecked);
+        });
 
         // Log in section
         Button signInButton = findViewById(R.id.signInButton);
@@ -69,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //        String formattedTime = now.format(formatter);
 
-        dataBaseHelper.insertTask("Midterm100", "Computer Vision", "2024-12-11 06:00", "High", true, true, false, true);
+//        dataBaseHelper.insertTask("Midterm100", "Computer Vision", "2024-12-11 06:00", "High", true, true, false, true);
 //        dataBaseHelper.insertTask("Midterm101", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
 //        dataBaseHelper.insertTask("Midterm102", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
 //        dataBaseHelper.insertTask("Midterm103", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
@@ -113,6 +124,16 @@ public class MainActivity extends AppCompatActivity {
                 goToSignUpActivity();
             }
         });
+    }
+
+    private void applyDarkMode(boolean isChecked) {
+        if (isChecked) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            sharedPrefManager.writeBoolean("darkTheme", true);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            sharedPrefManager.writeBoolean("darkTheme", false);
+        }
     }
 
     private void goToSignUpActivity() {
@@ -172,5 +193,6 @@ public class MainActivity extends AppCompatActivity {
             rememberMeCheckBox.setChecked(true);
         }
     }
+
 
 }

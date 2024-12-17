@@ -1,5 +1,4 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor">
@@ -129,6 +128,13 @@
             android:text="Remember me"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/darkThemeSwitch"
+            android:layout_width="161dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Dark Theme" />
 
         <!-- Register Link -->
     </LinearLayout>

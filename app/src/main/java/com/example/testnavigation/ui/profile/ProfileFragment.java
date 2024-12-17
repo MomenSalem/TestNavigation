@@ -8,14 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.testnavigation.DataBaseHelper;
 import com.example.testnavigation.MainActivity;
+import com.example.testnavigation.SharedPrefManager;
 import com.example.testnavigation.User;
 import com.example.testnavigation.databinding.FragmentProfileBinding;
 
@@ -58,6 +61,7 @@ public class ProfileFragment extends Fragment {
 
         Button makeChangesButton = binding.makeChangesButton;
 
+
         makeChangesButton.setOnClickListener(v -> {
 
             // get the data from the text fields
@@ -79,6 +83,7 @@ public class ProfileFragment extends Fragment {
 
         return root;
     }
+
 
     private boolean isEmailValid(EditText emailAddressEditText) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddressEditText.getText().toString()).matches();

@@ -56,6 +56,9 @@ public class NewTaskFragment extends Fragment {
         taskDescriptionEditText = binding.taskDescriptionEditText;
         priorityLevelRadioGroup = binding.priorityLevelRadioGroup;
 
+        // make the choice on the "medium" radio button selected by default
+        priorityLevelRadioGroup.check(binding.priorityLevelRadioGroup.getChildAt(1).getId());
+
 
         // Get the due date and time
         selectDateTimeButton.setOnClickListener(view -> showDateTimePicker());

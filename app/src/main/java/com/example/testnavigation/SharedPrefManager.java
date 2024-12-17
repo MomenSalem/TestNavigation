@@ -2,6 +2,9 @@ package com.example.testnavigation;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import androidx.appcompat.app.AppCompatDelegate;
+
 public class SharedPrefManager {
 
     private static final String SHARED_PREF_NAME = "My Shared Preference";
@@ -9,6 +12,7 @@ public class SharedPrefManager {
     private static SharedPrefManager ourInstance = null;
     private static SharedPreferences sharedPreferences = null;
     private static SharedPreferences.Editor editor = null;
+
     public static SharedPrefManager getInstance(Context context) {
         if (ourInstance != null) {
             return ourInstance;
@@ -26,8 +30,8 @@ public class SharedPrefManager {
         return sharedPreferences.getBoolean(rememberMe, b);
     }
 
-    public void writeBoolean(String rememberMe, boolean b) {
-        editor.putBoolean(rememberMe, b);
+    public void writeBoolean(String key, boolean b) {
+        editor.putBoolean(key, b);
         editor.commit();
     }
 
@@ -40,4 +44,19 @@ public class SharedPrefManager {
         return sharedPreferences.getString(key, defaultValue);
     }
 
+
+    public boolean applySavedTheme(Context context) {
+
+        sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME,
+                SHARED_PREF_PRIVATE);
+
+        if (sharedPreferences.getBoolean("darkTheme", false)) {
+            // Apply the dark theme
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            // Apply the light theme
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        return sharedPreferences.getBoolean("darkTheme", false);
+    }
 }

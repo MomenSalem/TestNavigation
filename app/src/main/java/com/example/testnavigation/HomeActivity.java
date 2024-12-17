@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.testnavigation.ui.profile.ProfileFragment;
@@ -14,6 +15,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -30,15 +32,19 @@ public class HomeActivity extends AppCompatActivity {
     private ActivityHomeBinding binding;
     SharedPrefManager sharedPrefManager;
     DataBaseHelper dataBaseHelper;
+    Switch darkModeSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         // Get the data from the intent
         Intent intent = getIntent();
         String userid = intent.getStringExtra("user_primary_key");
+//        darkModeSwitch = findViewById(R.id.darkThemeSwitch);
 
+//        applySavedTheme();
 
 
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
@@ -63,6 +69,10 @@ public class HomeActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         Context context = this;
+
+//        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            applyDarkMode(isChecked);
+//        });
 
 //        sharedPrefManager = SharedPrefManager.getInstance(this);
 //        String userid = sharedPrefManager.readString("user_primary_key", "no way");
@@ -123,6 +133,32 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void applyDarkMode(boolean isChecked) {
+        if (isChecked) {
+            // Apply the dark theme
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            sharedPrefManager.writeBoolean("darkTheme", true);
+        } else {
+            // Apply the light theme
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            sharedPrefManager.writeBoolean("darkTheme", false);
+        }
+
+    }
+
+    private void applySavedTheme() {
+        // Apply the saved theme
+        if (sharedPrefManager.readBoolean("darkTheme", false)) {
+            // Apply the dark theme
+            darkModeSwitch.setChecked(true);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            // Apply the light theme
+            darkModeSwitch.setChecked(false);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     @Override
