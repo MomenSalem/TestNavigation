@@ -68,7 +68,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             taskTitle.setText(task.getTitle());
             taskDescription.setText(task.getDescription());
             taskDueDate.setText("Due: " + task.getDueDate());
-            taskPriority.setText("Priority: " + task.getPriority());
+            if (task.getPriority() == 2) {
+                taskPriority.setText("Priority: Low");
+                taskPriority.setTextColor(context.getResources().getColor(R.color.colorLowPriority));
+            } else if (task.getPriority() == 1) {
+                taskPriority.setText("Priority: Medium");
+                taskPriority.setTextColor(context.getResources().getColor(R.color.colorMediumPriority));
+            } else {
+                taskPriority.setText("Priority: High");
+                taskPriority.setTextColor(context.getResources().getColor(R.color.colorHighPriority));
+            }
             completionStatus.setChecked(task.isCompleted());
 
             // Set visibility based on permissions set in task object

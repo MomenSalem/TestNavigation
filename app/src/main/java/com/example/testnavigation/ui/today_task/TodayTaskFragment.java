@@ -24,6 +24,7 @@ import com.example.testnavigation.databinding.FragmentTodayBinding;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import com.example.testnavigation.SharedPrefManager;
 
 import nl.dionsegijn.konfetti.core.Party;
 import nl.dionsegijn.konfetti.core.PartyFactory;
@@ -36,6 +37,7 @@ import nl.dionsegijn.konfetti.xml.KonfettiView;
 public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
 
     private FragmentTodayBinding binding;
+    SharedPrefManager sharedPrefManager;
     DataBaseHelper dataBaseHelper;
     ArrayList<Task> taskList;
     ArrayList<Task> filteredTaskList;
@@ -46,6 +48,9 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
 
         binding = FragmentTodayBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sharedPrefManager = SharedPrefManager.getInstance(this.getContext());
+        String userEmail = sharedPrefManager.readString("user_primary_key", "no way");
 
         RecyclerView recyclerView = binding.recyclerView;
         SearchView searchView = binding.searchView;
@@ -61,7 +66,7 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
                 dataBaseHelper.close();
             }
         }
-        Cursor cursor = dataBaseHelper.getTodayTasks();
+        Cursor cursor = dataBaseHelper.getTodayTasks(userEmail);
         taskList = new ArrayList<>();
 
         // Loop through the cursor and add tasks to the ArrayList
@@ -71,7 +76,7 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
                 String taskTitle = cursor.getString(1);
                 String taskDescription = cursor.getString(2);
                 String dueDate = cursor.getString(3);
-                String priority = cursor.getString(4);
+                int priority = cursor.getInt(4);
                 boolean canEdit = cursor.getInt(5) == 1;
                 boolean canDelete = cursor.getInt(6) == 1;
                 boolean setReminder = cursor.getInt(7) == 1;

@@ -3,19 +3,24 @@ package com.example.testnavigation.ui.all_tasks;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testnavigation.DataBaseHelper;
 import com.example.testnavigation.DateSeparatorDecoration;
+import com.example.testnavigation.EditTaskActivity;
+import com.example.testnavigation.R;
 import com.example.testnavigation.SharedPrefManager;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
@@ -26,6 +31,7 @@ import java.util.ArrayList;
 public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
 
     private FragmentAllTasksBinding binding;
+    SharedPrefManager sharedPrefManager;
     DataBaseHelper dataBaseHelper;
     ArrayList<Task> taskList;
     ArrayList<Task> filteredTaskList; // List to hold the filtered tasks
@@ -36,6 +42,9 @@ public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInte
 
         binding = FragmentAllTasksBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sharedPrefManager = SharedPrefManager.getInstance(this.getContext());
+        String userEmail = sharedPrefManager.readString("user_primary_key", "no way");
 
         RecyclerView recyclerView = binding.recyclerView;
         SearchView searchView = binding.searchView;
@@ -51,7 +60,7 @@ public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInte
                 dataBaseHelper.close();
             }
         }
-        Cursor cursor = dataBaseHelper.getAllTasks();
+        Cursor cursor = dataBaseHelper.getAllTasks(userEmail);
         taskList = new ArrayList<>();
 
         // Loop through the cursor and add tasks to the ArrayList
@@ -61,7 +70,7 @@ public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInte
                 String taskTitle = cursor.getString(1);
                 String taskDescription = cursor.getString(2);
                 String dueDate = cursor.getString(3);
-                String priority = cursor.getString(4);
+                int priority = cursor.getInt(4);
                 boolean canEdit = cursor.getInt(5) == 1;
                 boolean canDelete = cursor.getInt(6) == 1;
                 boolean setReminder = cursor.getInt(7) == 1;
@@ -128,8 +137,12 @@ public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInte
 
     @Override
     public void onEditClicked(Task task) {
-        Toast.makeText(this.getContext(), "Edit button clicked", Toast.LENGTH_SHORT).show();
+        // Start EditTaskActivity and pass the task ID
+        Intent intent = new Intent(getContext(), EditTaskActivity.class);
+        intent.putExtra("task_id", task.getId());
+        startActivity(intent);
     }
+
 
     @Override
     public void onDeleteClicked(Task task) {

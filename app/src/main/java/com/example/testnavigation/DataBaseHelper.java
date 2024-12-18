@@ -22,16 +22,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "task_title TEXT, " +
                 "task_description TEXT, " +
                 "due_date TEXT NOT NULL, " + // Store date as String in ISO format (e.g., "2024-11-01 10:00")
-                "priority TEXT, " + // "High", "Medium", "Low"
+                "priority INTEGER, " + // "0 -> High", "1 -> Medium", "2 -> Low"
                 "can_edit INTEGER, " + // 0 for false, 1 for true
                 "can_delete INTEGER, " + // 0 for false, 1 for true
                 "set_reminder INTEGER, " + // 0 for false, 1 for true
-                "completion_status INTEGER)" // 0 for incomplete, 1 for complete
-        );
+                "completion_status INTEGER, " +// 0 for incomplete, 1 for complete
+                "user_email TEXT, " +
+                "FOREIGN KEY (user_email) REFERENCES user(EMAIL_ADDRESS) ON DELETE CASCADE ON UPDATE CASCADE" +
+                ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        // Drop the old tables if they exist
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS user");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS tasks");
+        onCreate(sqLiteDatabase);
     }
 
     // ------------------------- User Methods -------------------------
@@ -67,10 +73,27 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return cursor.getCount() > 0;
     }
 
+    public void updateUser(String id, User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("EMAIL_ADDRESS", user.getEmailAddress());
+        contentValues.put("PASSWORD", user.getPassword());
+        db.update("user", contentValues, "EMAIL_ADDRESS = ?", new String[]{id});
+        db.close();
+    }
+
     // ------------------------- Task Methods -------------------------
 
+    public void deleteTable(String tableName) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + tableName);
+        db.close();
+    }
+
     // Insert task
-    public void insertTask(String task_title, String task_description, String due_date, String priority, boolean can_edit, boolean can_delete, boolean set_reminder, boolean completion_status) {
+    public void insertTask(String task_title, String task_description, String due_date, int priority,
+                           boolean can_edit, boolean can_delete,
+                           boolean set_reminder, boolean completion_status, String user_email) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("task_title", task_title);
@@ -81,42 +104,73 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put("can_delete", can_delete ? 1 : 0);
         contentValues.put("set_reminder", set_reminder ? 1 : 0);
         contentValues.put("completion_status", completion_status ? 1 : 0);
+        contentValues.put("user_email", user_email);
         long id = db.insert("tasks", null, contentValues);
-        new Task(id, task_title, task_description, due_date, priority, can_edit, can_delete, set_reminder, completion_status);
+
+        if (id != -1) {
+            // Task successfully inserted
+            new Task(id, task_title, task_description, due_date, priority, can_edit, can_delete, set_reminder, completion_status);
+        } else {
+            // Handle insertion failure (e.g., foreign key constraint violation)
+            Log.e("DB_ERROR", "Failed to insert task. Check foreign key constraint.");
+        }
         db.close();
 //        db.execSQL("DELETE FROM tasks");
     }
 
-    // Get tasks for today
-    public Cursor getTodayTasks() { // get tasks for specific user
+    public Cursor getTaskByIdForUser(long taskId, String userEmail) {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM tasks WHERE DATE(due_date) = DATE('now', 'localtime')", null);
+        return db.rawQuery("SELECT * FROM tasks WHERE id = ? AND user_email = ?",
+                new String[]{String.valueOf(taskId), userEmail});
+    }
+
+
+    // Get tasks for today
+    public Cursor getTodayTasks(String userEmail) { // get tasks for specific user
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM tasks WHERE DATE(due_date) = DATE('now', 'localtime') and user_email = ?", new String[]{userEmail});
     }
 
     // Get all tasks
-    public Cursor getAllTasks() {
+    public Cursor getAllTasks(String userEmail) {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM tasks ORDER BY DATE(due_date) ASC;", null);
+        return db.rawQuery("SELECT * FROM tasks WHERE user_email = ? ORDER BY DATE(due_date) ASC;", new String[]{userEmail});
     }
 
     // Get all completed tasks
-    public Cursor getCompletedTasks() {
+    public Cursor getCompletedTasks(String userEmail) {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM tasks WHERE completion_status = 1 ORDER BY DATE(due_date) ASC;", null);
+        return db.rawQuery("SELECT * FROM tasks WHERE completion_status = 1 and user_email = ? ORDER BY DATE(due_date) ASC;", new String[]{userEmail});
     }
 
-    public Cursor getTasksWithinDateRange(String startDate, String endDate) {
+    public Cursor getTasksWithinDateRange(String startDate, String endDate, String userEmail) {
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM tasks WHERE DATE(due_date) BETWEEN ? AND ? ORDER BY DATE(due_date) ASC";
-        return db.rawQuery(query, new String[]{startDate, endDate});
+        String query = "SELECT * FROM tasks WHERE DATE(due_date) BETWEEN ? AND ? and user_email = ? ORDER BY DATE(due_date) ASC";
+        return db.rawQuery(query, new String[]{startDate, endDate, userEmail});
     }
 
 
-    // Get completed tasks
-    public Cursor getTasksByPriority(String priority) {
-        SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM tasks WHERE priority = ?", new String[]{priority});
+    public void updateTask(Task task) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("task_title", task.getTitle());
+        contentValues.put("task_description", task.getDescription());
+        contentValues.put("due_date", task.getDueDate());
+        contentValues.put("priority", task.getPriority());
+        contentValues.put("can_edit", task.isCanEdit() ? 1 : 0);
+        contentValues.put("can_delete", task.isCanDelete() ? 1 : 0);
+        contentValues.put("set_reminder", task.isSetReminder() ? 1 : 0);
+        contentValues.put("completion_status", task.isCompleted() ? 1 : 0);
+
+        // Update the task with the given ID
+        db.update("tasks", contentValues, "id = ?", new String[]{String.valueOf(task.getId())});
     }
+
+//    // Get completed tasks
+//    public Cursor getTasksByPriority(String priority) {
+//        SQLiteDatabase db = getReadableDatabase();
+//        return db.rawQuery("SELECT * FROM tasks WHERE priority = ?", new String[]{priority});
+//    }
 
 
     // Get tasks by completion status
@@ -143,12 +197,5 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateUser(String id, User user) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("EMAIL_ADDRESS", user.getEmailAddress());
-        contentValues.put("PASSWORD", user.getPassword());
-        db.update("user", contentValues, "EMAIL_ADDRESS = ?", new String[]{id});
-        db.close();
-    }
+
 }

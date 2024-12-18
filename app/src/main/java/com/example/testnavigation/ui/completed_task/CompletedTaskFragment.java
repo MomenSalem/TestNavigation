@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testnavigation.DataBaseHelper;
 import com.example.testnavigation.DateSeparatorDecoration;
+import com.example.testnavigation.SharedPrefManager;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
 import com.example.testnavigation.databinding.FragmentCompletedBinding;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
 
     private FragmentCompletedBinding binding;
+    SharedPrefManager sharedPrefManager;
     DataBaseHelper dataBaseHelper;
     ArrayList<Task> taskList;
     ArrayList<Task> filteredTaskList;
@@ -35,6 +37,9 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
 
         binding = FragmentCompletedBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sharedPrefManager = SharedPrefManager.getInstance(this.getContext());
+        String userEmail = sharedPrefManager.readString("user_primary_key", "no way");
 
         RecyclerView recyclerView = binding.recyclerView;
         SearchView searchView = binding.searchView;
@@ -51,7 +56,7 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
                 dataBaseHelper.close();
             }
         }
-        Cursor cursor = dataBaseHelper.getCompletedTasks();
+        Cursor cursor = dataBaseHelper.getCompletedTasks(userEmail);
         taskList = new ArrayList<>();
 
         // Loop through the cursor and add tasks to the ArrayList
@@ -61,7 +66,7 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
                 String taskTitle = cursor.getString(1);
                 String taskDescription = cursor.getString(2);
                 String dueDate = cursor.getString(3);
-                String priority = cursor.getString(4);
+                int priority = cursor.getInt(4);
                 boolean canEdit = cursor.getInt(5) == 1;
                 boolean canDelete = cursor.getInt(6) == 1;
                 boolean setReminder = cursor.getInt(7) == 1;

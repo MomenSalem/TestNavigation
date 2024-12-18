@@ -14,7 +14,7 @@ public class DateSeparatorDecoration extends RecyclerView.ItemDecoration {
 
     public DateSeparatorDecoration(Context context) {
         paint = new Paint();
-        paint.setColor(ContextCompat.getColor(context, R.color.black)); // Define the separator color
+        paint.setColor(ContextCompat.getColor(context, R.color.red)); // Define the separator color
         paint.setStrokeWidth(15); // Set the thickness of the separator line
     }
 

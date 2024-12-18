@@ -37,16 +37,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        // Get the data from the intent
-        Intent intent = getIntent();
-        String userid = intent.getStringExtra("user_primary_key");
-//        darkModeSwitch = findViewById(R.id.darkThemeSwitch);
-
-//        applySavedTheme();
-
-
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -62,6 +52,16 @@ public class HomeActivity extends AppCompatActivity {
                 R.id.nav_Today, R.id.nav_newT, R.id.nav_allT, R.id.nav_compT, R.id.nav_searchT, R.id.nav_prof)
                 .setOpenableLayout(drawer)
                 .build();
+
+        // Get the data from the intent
+        Intent intent = getIntent();
+        String userid = intent.getStringExtra("user_primary_key");
+        sharedPrefManager = SharedPrefManager.getInstance(this);
+        sharedPrefManager.writeString("user_primary_key", userid);
+
+//        darkModeSwitch = findViewById(R.id.darkThemeSwitch);
+
+//        applySavedTheme();
 
         // Set up NavigationController and UI
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

@@ -38,7 +38,15 @@ public class MainActivity extends AppCompatActivity {
         // Shared Preferences
         sharedPrefManager = SharedPrefManager.getInstance(MainActivity.this);
         darkModeSwitch = findViewById(R.id.darkThemeSwitch);
-        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
+//        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
+//        boolean test = sharedPrefManager.readBoolean("darkTheme", false);
+//        if (test){
+//            applyDarkMode(true);
+//            darkModeSwitch.setChecked(true);
+//        }else{
+//            applyDarkMode(false);
+//            darkModeSwitch.setChecked(false);
+//        }
 
         darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             applyDarkMode(isChecked);
@@ -127,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void applyDarkMode(boolean isChecked) {
+        Log.d("test123", "applyDarkMode: " + isChecked);
         if (isChecked) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             sharedPrefManager.writeBoolean("darkTheme", true);

@@ -5,8 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/linkColor"
-    android:backgroundTint="@color/linkColor"
     android:orientation="vertical"
     tools:context=".SignUpActivity">
 
@@ -50,8 +48,6 @@
         android:layout_width="389dp"
         android:layout_height="421dp"
         android:layout_gravity="center"
-        android:background="@color/backgroundColor"
-        android:backgroundTint="@color/backgroundColor"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingTop="20dp"

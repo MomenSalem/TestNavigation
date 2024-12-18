@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.testnavigation.DataBaseHelper;
 import com.example.testnavigation.MainActivity;
+import com.example.testnavigation.SharedPrefManager;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.databinding.FragmentNewTaskBinding;
 import com.google.android.material.textfield.TextInputEditText;
@@ -28,6 +29,7 @@ import java.util.Calendar;
 
 public class NewTaskFragment extends Fragment {
 
+    SharedPrefManager sharedPrefManager;
     TextInputEditText taskTitleEditText;
     TextInputEditText taskDescriptionEditText;
     String dueDateAndTime;
@@ -47,6 +49,9 @@ public class NewTaskFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentNewTaskBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        sharedPrefManager = SharedPrefManager.getInstance(this.getContext());
+        String userEmail = sharedPrefManager.readString("user_primary_key", "no way");
 
         DataBaseHelper dataBaseHelper = new DataBaseHelper(getActivity(), "final_project_db", null, 1);
 
@@ -70,15 +75,21 @@ public class NewTaskFragment extends Fragment {
             String taskTitle = getData(taskTitleEditText);
             String taskDescription = getData(taskDescriptionEditText);
             getPriorityLevel();
-            boolean completionStatus = isChecked(binding.completionStatusCheckBox);
-            boolean reminderStatus = isChecked(binding.remindMeCheckBox);
-            boolean deletableTask = isChecked(binding.deletableTaskCheckBox);
-            boolean editableTask = isChecked(binding.editableTaskCheckBox);
+            completionStatus = isChecked(binding.completionStatusCheckBox);
+            reminderStatus = isChecked(binding.remindMeCheckBox);
+            deletableTask = isChecked(binding.deletableTaskCheckBox);
+            editableTask = isChecked(binding.editableTaskCheckBox);
 
             // Check if any of the fields are empty
             if (!areEmptyFields(taskTitle, taskDescription)) {
+                int priority = 1;
+                if (priorityLevel.equals("High")) {
+                    priority = 0;
+                } else if (priorityLevel.equals("Low")) {
+                    priority = 2;
+                }
                 // Add the task to the database
-                dataBaseHelper.insertTask(taskTitle, taskDescription, dueDateAndTime, priorityLevel, editableTask, deletableTask, reminderStatus, completionStatus);
+                dataBaseHelper.insertTask(taskTitle, taskDescription, dueDateAndTime, priority, editableTask, deletableTask, reminderStatus, completionStatus, userEmail);
                 // Make a toast message
                 showToastMessage("Task added successfully!");
 
