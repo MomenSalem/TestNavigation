@@ -1,7 +1,9 @@
 package com.example.testnavigation.ui.search_task;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,12 +15,15 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testnavigation.DataBaseHelper;
+import com.example.testnavigation.EditTaskActivity;
 import com.example.testnavigation.SharedPrefManager;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
@@ -39,6 +44,7 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
     ArrayList<Task> taskList;
     ArrayList<Task> filteredTaskList;
     TaskAdapter adapter;
+    String userEmail;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,7 +53,7 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
         View root = binding.getRoot();
 
         sharedPrefManager = SharedPrefManager.getInstance(this.getContext());
-        String userEmail = sharedPrefManager.readString("user_primary_key", "no way");
+        userEmail = sharedPrefManager.readString("user_primary_key", "no way");
 
         Context context = getContext();
 
@@ -194,7 +200,10 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
 
     @Override
     public void onEditClicked(Task task) {
-        Toast.makeText(this.getContext(), "Search--Edit button clicked", Toast.LENGTH_SHORT).show();
+        // Start EditTaskActivity and pass the task ID
+        Intent intent = new Intent(getContext(), EditTaskActivity.class);
+        intent.putExtra("task_id", task.getId());
+        editTaskLauncher.launch(intent);
     }
 
     @Override
@@ -216,7 +225,51 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
 
     @Override
     public void onShareClicked(Task task) {
+        SharedPrefManager sharedPrefManager;
+        sharedPrefManager = SharedPrefManager.getInstance(this.getContext());
+        String userEmail = sharedPrefManager.readString("user_primary_key", "no way");
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{userEmail});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Todo Task Details");
+        // Convert priority from integer to string label
+        String priorityLabel = null;
+        switch (task.getPriority()) {
+            case 0:
+                priorityLabel = "High";
+                break;
+            case 1:
+                priorityLabel = "Medium";
+                break;
+            case 2:
+                priorityLabel = "Low";
+                break;
+        }
 
+        // Define additional task attributes
+        String editable = task.isCanEdit() ? "Yes" : "No";
+        String deletable = task.isCanDelete() ? "Yes" : "No";
+        String reminderSet = task.isSetReminder() ? "Yes" : "No";
+        String completedStatus = task.isCompleted() ? "Completed" : "Not Completed";
+
+        // Prepare the text including all task details
+        String taskDetails = "Task Title: " + task.getTitle() +
+                "\nDescription: " + task.getDescription() +
+                "\nDue Date and Time: " + task.getDueDate() +
+                "\nPriority: " + priorityLabel +
+                "\nEditable: " + editable +
+                "\nDeletable: " + deletable +
+                "\nReminder Set: " + reminderSet +
+                "\nCompletion Status: " + completedStatus;
+
+        // Put the extended text into the intent
+        intent.putExtra(Intent.EXTRA_TEXT, taskDetails);
+
+        try {
+            this.getContext().startActivity(Intent.createChooser(intent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this.getContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -235,4 +288,53 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
         super.onDestroyView();
         binding = null;
     }
+
+    ActivityResultLauncher<Intent> editTaskLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    // Retrieve the updated task details from the result intent
+                    long taskId = result.getData().getLongExtra("task_id", -1);
+                    if (taskId != -1) {
+                        int position = findTaskPositionById(taskId);
+                        if (position != -1) {
+                            Task updatedTask = fetchTaskById(taskId); // Implement this method to fetch updated task from your database
+                            taskList.set(position, updatedTask);
+                            filteredTaskList.set(position, updatedTask);
+                            adapter.notifyItemChanged(position);
+                            Toast.makeText(getContext(), "Task updated successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+
+    private int findTaskPositionById(long taskId) {
+        for (int i = 0; i < taskList.size(); i++) {
+            if (taskList.get(i).getId() == taskId) {
+                return i; // Return the position of the task in the list
+            }
+        }
+        return -1; // Return -1 if the task is not found
+    }
+
+    private Task fetchTaskById(long taskId) {
+        Cursor cursor = dataBaseHelper.getTaskByIdForUser(taskId, userEmail);
+        Task updatedTask = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            long id = cursor.getLong(0);
+            String taskTitle = cursor.getString(1);
+            String taskDescription = cursor.getString(2);
+            String dueDate = cursor.getString(3);
+            int priority = cursor.getInt(4);
+            boolean canEdit = cursor.getInt(5) == 1;
+            boolean canDelete = cursor.getInt(6) == 1;
+            boolean setReminder = cursor.getInt(7) == 1;
+            boolean completionStatus = cursor.getInt(8) == 1;
+
+            updatedTask = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+            cursor.close();
+        }
+        return updatedTask;
+    }
+
 }

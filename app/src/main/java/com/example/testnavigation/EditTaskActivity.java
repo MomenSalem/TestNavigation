@@ -1,6 +1,11 @@
 package com.example.testnavigation;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -10,8 +15,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.testnavigation.databinding.ActivityEditTaskBinding;
+
+import java.util.Calendar;
 
 public class EditTaskActivity extends AppCompatActivity {
     private ActivityEditTaskBinding binding;
@@ -21,7 +29,7 @@ public class EditTaskActivity extends AppCompatActivity {
     private TextView dueDateTime;
     private RadioGroup priorityRadioGroup;
     private CheckBox reminderCheckBox, completionCheckBox, canEditCheckBox, canDeleteCheckBox;
-    private Button dateButton, timeButton, saveButton, cancelButton;
+    private Button dateTimeButton, saveButton, cancelButton;
     Task task;
 
     @Override
@@ -43,8 +51,7 @@ public class EditTaskActivity extends AppCompatActivity {
         completionCheckBox = binding.checkBoxCompleted;
         canEditCheckBox = binding.checkBoxCanEdit;
         canDeleteCheckBox = binding.checkBoxCanDelete;
-        dateButton = binding.dateBtn;
-        timeButton = binding.timeBtn;
+        dateTimeButton = binding.dateTimeBtn;
         saveButton = binding.buttonSave;
         cancelButton = binding.buttonCancel;
 
@@ -102,6 +109,7 @@ public class EditTaskActivity extends AppCompatActivity {
                     priorityRadioGroup.check(R.id.radioLow);
                     break;
             }
+            dateTimeButton.setOnClickListener(v -> showDateTimePicker());
 
             // Set reminder and completion status
             reminderCheckBox.setChecked(setReminder);
@@ -109,9 +117,17 @@ public class EditTaskActivity extends AppCompatActivity {
             canEditCheckBox.setChecked(canEdit);
             canDeleteCheckBox.setChecked(canDelete);
 
-
             // Set up listeners
-            saveButton.setOnClickListener(v -> saveTask());
+            saveButton.setOnClickListener(v ->
+                    new AlertDialog.Builder(this)
+                            .setTitle("Edit Task (" + task.getTitle() + ")")
+                            .setMessage("Are you sure you want to edit this task?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                saveTask();
+                            })
+                            .setNegativeButton("No", null)
+                            .show());
+
             cancelButton.setOnClickListener(v -> finish());
         }
         else{
@@ -119,22 +135,54 @@ public class EditTaskActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    private void showDateTimePicker() {
+        Calendar calendar = Calendar.getInstance();
+
+
+        // DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    // After date is selected, show TimePickerDialog
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                            (timeView, hourOfDay, minute) -> {
+                                // Combine date and time
+                                String dueDateTimeNew = String.format("%04d-%02d-%02d %02d:%02d", year, monthOfYear + 1, dayOfMonth, hourOfDay, minute);
+                                dueDateTime.setText(dueDateTimeNew);
+                            },
+                            calendar.get(Calendar.HOUR_OF_DAY),
+                            calendar.get(Calendar.MINUTE),
+                            true); // Use 24-hour format
+                    timePickerDialog.show();
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.show();
+    }
+
     private void saveTask() {
         // Extract the text from the EditText fields
         String title = titleEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
         String dueDT = dueDateTime.getText().toString();
 
+        if (title.isEmpty()) {
+            titleEditText.setBackgroundColor(Color.RED);
+        }
+        if (description.isEmpty()) {
+            descriptionEditText.setBackgroundColor(Color.RED);
+        }
         // Check if any fields are empty
         if (title.isEmpty() || description.isEmpty()) {
             // Create a toast message for the empty field(s)
-            String message = "Please fill in all the fields:";
-            if (title.isEmpty()) message += "\n- Title";
-            if (description.isEmpty()) message += "\n- Description";
+            String toastMessage = "Please fill in all the fields:";
+            if (title.isEmpty()) toastMessage += "\n- Title";
+            if (description.isEmpty()) toastMessage += "\n- Description";
 
             // Show the toast with a red background
-            Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-            toast.getView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            Toast toast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
             toast.show();
             return;  // Do not continue with the save
         }
@@ -162,6 +210,9 @@ public class EditTaskActivity extends AppCompatActivity {
             dataBaseHelper = new DataBaseHelper(this, "final_project_db", null, 1);
             dataBaseHelper.updateTask(task);
             Toast.makeText(this, "Task updated successfully", Toast.LENGTH_SHORT).show();
+            Intent intent = getIntent();
+            intent.putExtra("task_id", task.getId());
+            setResult(Activity.RESULT_OK, intent);
             finish();
         } catch (Exception e) {
             e.printStackTrace();
