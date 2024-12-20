@@ -82,8 +82,8 @@ public class EditTaskActivity extends AppCompatActivity {
             boolean setReminder = cursor.getInt(7) == 1;
             boolean completionStatus = cursor.getInt(8) == 1;
 
-            // Create a new Task object
-            task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+//            // Create a new Task object
+//            task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
 
             // Populate the fields with task data
             titleEditText.setText(taskTitle);

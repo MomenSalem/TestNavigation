@@ -28,8 +28,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "set_reminder INTEGER, " + // 0 for false, 1 for true
                 "completion_status INTEGER, " +// 0 for incomplete, 1 for complete
                 "user_email TEXT, " +
-                "FOREIGN KEY (user_email) REFERENCES user(EMAIL_ADDRESS) ON DELETE CASCADE ON UPDATE CASCADE" +
-                ")");
+                "FOREIGN KEY (user_email) REFERENCES user(EMAIL_ADDRESS) ON DELETE CASCADE ON UPDATE CASCADE" + ")");
     }
 
     @Override
@@ -109,12 +108,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         if (id != -1) {
             // Task successfully inserted
-            new Task(id, task_title, task_description, due_date, priority, can_edit, can_delete, set_reminder, completion_status);
+            new Task(id, task_title, task_description, due_date, priority, can_edit, can_delete, set_reminder, completion_status, user_email);
         } else {
             // Handle insertion failure (e.g., foreign key constraint violation)
             Log.e("DB_ERROR", "Failed to insert task. Check foreign key constraint.");
         }
-        db.close();
+//        db.close();
 //        db.execSQL("DELETE FROM tasks");
     }
 
@@ -196,6 +195,4 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.delete("tasks", "id = ?", new String[]{String.valueOf(taskId)});
         db.close();
     }
-
-
 }

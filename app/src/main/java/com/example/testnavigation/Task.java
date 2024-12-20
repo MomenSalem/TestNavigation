@@ -5,11 +5,16 @@ public class Task {
     private String title;
     private String description;
     private String dueDate;
-    private int priority; // 0 : high, 1 : medium, 2 : low
+    private int priority;
     private boolean canEdit;
     private boolean canDelete;
     private boolean setReminder;
     private boolean isCompleted;
+    private String userEmail;
+
+    public Task() {
+
+    }
 
     public Task(long id, String title, String description, String dueDate, int priority, boolean canEdit, boolean canDelete, boolean setReminder, boolean isCompleted) {
         this.id = id;
@@ -21,6 +26,19 @@ public class Task {
         this.canDelete = canDelete;
         this.setReminder = setReminder;
         this.isCompleted = isCompleted;
+    }
+
+    public Task(long id, String title, String description, String dueDate, int priority, boolean canEdit, boolean canDelete, boolean setReminder, boolean isCompleted, String userEmail ) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.canEdit = canEdit;
+        this.canDelete = canDelete;
+        this.setReminder = setReminder;
+        this.isCompleted = isCompleted;
+        this.userEmail = userEmail;
     }
 
     // Getters and setters for the task properties
@@ -95,5 +113,25 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    public String getUserEmail() {
+        return userEmail;
+    }
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String toString() {
+        return "Task{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", dueDate='" + dueDate + '\'' +
+                ", priority=" + priority +
+                ", canEdit=" + canEdit +
+                ", canDelete=" + canDelete +
+                ", setReminder=" + setReminder +
+                ", isCompleted=" + isCompleted +
+                ", userEmail='" + userEmail + '\'' +
+                '}';
     }
 }

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.testnavigation.ConnectionAsyncTask;
 import com.example.testnavigation.DataBaseHelper;
 import com.example.testnavigation.MainActivity;
 import com.example.testnavigation.SharedPrefManager;
@@ -26,6 +27,7 @@ import com.example.testnavigation.databinding.FragmentNewTaskBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class NewTaskFragment extends Fragment {
 
@@ -41,6 +43,8 @@ public class NewTaskFragment extends Fragment {
     boolean editableTask;
     TextView dueDateTimeTextView;
     Button selectDateTimeButton;
+
+    Button getReadyTasksButton;
 
 
     private FragmentNewTaskBinding binding;
@@ -60,6 +64,7 @@ public class NewTaskFragment extends Fragment {
         taskTitleEditText = binding.taskTitleEditText;
         taskDescriptionEditText = binding.taskDescriptionEditText;
         priorityLevelRadioGroup = binding.priorityLevelRadioGroup;
+        getReadyTasksButton = binding.getReadyTasksButton;
 
         // make the choice on the "medium" radio button selected by default
         priorityLevelRadioGroup.check(binding.priorityLevelRadioGroup.getChildAt(1).getId());
@@ -67,6 +72,9 @@ public class NewTaskFragment extends Fragment {
 
         // Get the due date and time
         selectDateTimeButton.setOnClickListener(view -> showDateTimePicker());
+
+        // get ready tasks button
+        getReadyTasksButton.setOnClickListener(view -> getReadyTasks());
 
         // Set the click listener for the "Add Task" button
         binding.addButton.setOnClickListener(view -> {
@@ -97,11 +105,13 @@ public class NewTaskFragment extends Fragment {
                 // Show error message
                 showAlertDialog("Please fill in all the fields.");
             }
-
         });
-
-
         return root;
+    }
+
+    private void getReadyTasks() {
+        ConnectionAsyncTask connectionAsyncTask = new ConnectionAsyncTask(getActivity());
+        connectionAsyncTask.execute("https://run.mocky.io/v3/7c31c6de-9cff-4923-b647-685998ba37cd");
     }
 
     private boolean areEmptyFields(String taskTitle, String taskDescription) {
@@ -166,7 +176,7 @@ public class NewTaskFragment extends Fragment {
                 .show();
     }
 
-    private void showToastMessage(String s) {
+    public void showToastMessage(String s) {
         Toast toast = Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT);
         toast.show();
     }

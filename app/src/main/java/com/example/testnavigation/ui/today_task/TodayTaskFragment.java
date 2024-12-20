@@ -83,8 +83,8 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
                 boolean completionStatus = cursor.getInt(8) == 1;
 
                 // Create a Task object and add it to the list
-                Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
-                taskList.add(task);
+//                Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+//                taskList.add(task);
             } while (cursor.moveToNext());
         }
         filteredTaskList = new ArrayList<>(taskList);

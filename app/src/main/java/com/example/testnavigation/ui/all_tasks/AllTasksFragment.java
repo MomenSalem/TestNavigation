@@ -76,7 +76,7 @@ public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInte
                 boolean setReminder = cursor.getInt(7) == 1;
                 boolean completionStatus = cursor.getInt(8) == 1;
 
-                // Create a Task object and add it to the list
+//                 Create a Task object and add it to the list
                 Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
                 taskList.add(task);
             } while (cursor.moveToNext());

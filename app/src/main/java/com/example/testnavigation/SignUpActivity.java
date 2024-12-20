@@ -2,6 +2,7 @@ package com.example.testnavigation;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.InputType;
@@ -22,7 +23,6 @@ public class SignUpActivity extends AppCompatActivity {
     EditText lastNameEditText;
     EditText passwordEditText;
     EditText passwordConfirmEditText;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +155,7 @@ public class SignUpActivity extends AppCompatActivity {
             goToMainActivity();
         });
     }
+
 
     private void colorizeInputInWhite(EditText text) {
         text.setBackgroundColor(getResources().getColor(R.color.white));

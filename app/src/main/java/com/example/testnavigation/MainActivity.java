@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -157,13 +158,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void showAlertDialog(String alertMessage) {
+    void showAlertDialog(String alertMessage) {
         new AlertDialog.Builder(MainActivity.this).setMessage(alertMessage)
                 .setPositiveButton("OK", (dialog, which) -> { /* Handle yes */ })
                 .show();
     }
 
-    private void showToastMessage(String s) {
+    void showToastMessage(String s) {
         Toast toast = Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT);
         toast.show();
     }
@@ -202,6 +203,4 @@ public class MainActivity extends AppCompatActivity {
             rememberMeCheckBox.setChecked(true);
         }
     }
-
-
 }

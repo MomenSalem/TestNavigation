@@ -37,6 +37,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -79,57 +80,54 @@ public class HomeActivity extends AppCompatActivity {
 //        Log.d("user", "The user id is = " + userid);
 
         // Setup Navigation Item Selected Listener
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
 
-                if (id == R.id.nav_logout) {
-                    // Create an AlertDialog.Builder object
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            if (id == R.id.nav_logout) {
+                // Create an AlertDialog.Builder object
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                    // Set dialog title and message
-                    builder.setTitle("Logout Confirmation")
-                            .setMessage("Are you sure you want to log out?")  // The message asking the user to confirm
+                // Set dialog title and message
+                builder.setTitle("Logout Confirmation")
+                        .setMessage("Are you sure you want to log out?")  // The message asking the user to confirm
 
-                            // Positive button: Yes
-                            .setPositiveButton("Yes", (dialog, idDialog) -> {
-                                // Perform the logout action
-                                // Handle logout
-                                Toast.makeText(HomeActivity.this, "Logged out Successfully...", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear stack
-                                startActivity(intent);
-                                finish(); // Finish current activity (optional)
-                            })
+                        // Positive button: Yes
+                        .setPositiveButton("Yes", (dialog, idDialog) -> {
+                            // Perform the logout action
+                            // Handle logout
+                            Toast.makeText(HomeActivity.this, "Logged out Successfully...", Toast.LENGTH_SHORT).show();
+                            Intent intent1 = new Intent(HomeActivity.this, MainActivity.class);
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear stack
+                            startActivity(intent1);
+                            finish(); // Finish current activity (optional)
+                        })
 
-                            // Negative button: No
-                            .setNegativeButton("No", (dialog, idDialog) -> {
-                                // User canceled, just dismiss the dialog
-                                dialog.dismiss();
-                            });
+                        // Negative button: No
+                        .setNegativeButton("No", (dialog, idDialog) -> {
+                            // User canceled, just dismiss the dialog
+                            dialog.dismiss();
+                        });
 
-                    // Create and show the AlertDialog
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                // Create and show the AlertDialog
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
 
-                    return true;
-                }
-
-                // check if the navigation item is the profile item
-                if (id == R.id.nav_prof) {
-                    // send the data to the profile fragment
-                    Bundle bundle = new Bundle();
-                    bundle.putString("user_primary_key", userid);
-                    ProfileFragment profileFragment = new ProfileFragment();
-                    profileFragment.setArguments(bundle);
-                }
-
-
-                navController.navigate(id); // This automatically finds the fragment based on the navigation graph
-                drawer.closeDrawer(GravityCompat.START); // Close the drawer after selection
                 return true;
             }
+
+            // check if the navigation item is the profile item
+            if (id == R.id.nav_prof) {
+                // send the data to the profile fragment
+                Bundle bundle = new Bundle();
+                bundle.putString("user_primary_key", userid);
+                ProfileFragment profileFragment = new ProfileFragment();
+                profileFragment.setArguments(bundle);
+            }
+
+
+            navController.navigate(id); // This automatically finds the fragment based on the navigation graph
+            drawer.closeDrawer(GravityCompat.START); // Close the drawer after selection
+            return true;
         });
 
 

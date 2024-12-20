@@ -115,8 +115,8 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
                     boolean setReminder = cursor.getInt(7) == 1;
                     boolean completionStatus = cursor.getInt(8) == 1;
 
-                    Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
-                    taskList.add(task);
+//                    Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+//                    taskList.add(task);
                 }
 
                 filteredTaskList = new ArrayList<>(taskList);
