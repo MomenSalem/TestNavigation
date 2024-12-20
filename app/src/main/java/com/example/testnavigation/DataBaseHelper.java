@@ -52,8 +52,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 //         Delete
 //        sqLiteDatabase.execSQL("DELETE FROM user");
-
-
     }
 
     public Cursor getAllUsers() {
