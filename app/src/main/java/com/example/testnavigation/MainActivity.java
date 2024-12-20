@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // Shared Preferences
-        sharedPrefManager = SharedPrefManager.getInstance(MainActivity.this);
+        sharedPrefManager = SharedPrefManager.getInstance(this);
         darkModeSwitch = findViewById(R.id.darkThemeSwitch);
-//        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
+        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
+
 //        boolean test = sharedPrefManager.readBoolean("darkTheme", false);
 //        if (test){
 //            applyDarkMode(true);
@@ -203,4 +203,5 @@ public class MainActivity extends AppCompatActivity {
             rememberMeCheckBox.setChecked(true);
         }
     }
+
 }

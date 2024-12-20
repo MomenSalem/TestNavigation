@@ -1,16 +1,10 @@
 package com.example.testnavigation;
 
-import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
-import com.example.testnavigation.ui.new_task.NewTaskFragment;
 
 import java.util.List;
 

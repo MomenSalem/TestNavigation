@@ -22,8 +22,7 @@ public class SharedPrefManager {
         return ourInstance;
     }
     private SharedPrefManager(Context context) {
-        sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME,
-                SHARED_PREF_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, SHARED_PREF_PRIVATE);
         editor = sharedPreferences.edit();
     }
 
@@ -48,12 +47,11 @@ public class SharedPrefManager {
 
     public boolean applySavedTheme(Context context) {
 
-        sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME,
-                SHARED_PREF_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, SHARED_PREF_PRIVATE);
 
+//        boolean test = sharedPreferences.getBoolean("darkTheme", false);
+//        Log.d("test", "test = " + test);
 
-        boolean test = sharedPreferences.getBoolean("darkTheme", false);
-        Log.d("test", "test = " + test);
         if (sharedPreferences.getBoolean("darkTheme", false)) {
             // Apply the dark theme
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
