@@ -109,6 +109,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // Handle insertion failure (e.g., foreign key constraint violation)
             Log.e("DB_ERROR", "Failed to insert task. Check foreign key constraint.");
         }
+        // delete the user table
+//        deleteTable("user");
+//        deleteTable("tasks");
         db.close();
     }
 

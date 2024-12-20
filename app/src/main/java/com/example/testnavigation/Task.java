@@ -12,7 +12,6 @@ public class Task {
     private String userEmail;
 
     public Task() {
-
     }
 
     public Task(long id, String title, String description, String dueDate, int priority, boolean canEdit, boolean canDelete, boolean isCompleted) {

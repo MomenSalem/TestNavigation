@@ -32,7 +32,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.List;
 
 public class NewTaskFragment extends Fragment {
 
