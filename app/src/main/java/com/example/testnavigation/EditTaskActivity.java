@@ -86,7 +86,7 @@ public class EditTaskActivity extends AppCompatActivity {
             int priority = cursor.getInt(4);
             boolean canEdit = cursor.getInt(5) == 1;
             boolean canDelete = cursor.getInt(6) == 1;
-            boolean completionStatus = cursor.getInt(8) == 1;
+            boolean completionStatus = cursor.getInt(7) == 1;
 
             // Create a new Task object
             task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, completionStatus);
