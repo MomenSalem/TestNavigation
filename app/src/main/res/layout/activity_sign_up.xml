@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
     tools:context=".SignUpActivity">
 
     <TextView
@@ -46,13 +48,13 @@
 
     <LinearLayout
         android:layout_width="389dp"
-        android:layout_height="421dp"
+        android:layout_height="401dp"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingTop="20dp"
         android:paddingRight="10dp"
-        android:paddingBottom="40dp">
+        android:paddingBottom="10dp">
 
 
         <TextView
@@ -90,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="i.e Basheer"
+            android:hint="Min 5 and max 20 characters."
             android:inputType="text" />
 
         <TextView
@@ -109,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="i.e Arouri"
+            android:hint="Min 5 and max 20 characters."
             android:inputType="text" />
 
         <TextView
@@ -160,7 +162,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="10dp">
+        android:paddingTop="5dp">
 
         <Button
             android:id="@+id/signUpButton"
@@ -168,9 +170,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/button_border"
+            android:fontFamily="serif-monospace"
             android:text="Sign up"
-            android:textColor="@color/black"
-            android:textColorHint="@color/linkColor" />
+            android:textColor="@color/linkColor"
+            android:textColorHint="@color/linkColor"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/goToSignInButton"
@@ -178,8 +183,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/button_border"
+            android:fontFamily="serif-monospace"
+            android:paddingLeft="15dp"
             android:text="Already have an account ?"
-            android:textColor="@color/black" />
+            android:textColor="@color/linkColor"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

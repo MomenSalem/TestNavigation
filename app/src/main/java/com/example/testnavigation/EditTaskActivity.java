@@ -48,7 +48,6 @@ public class EditTaskActivity extends AppCompatActivity {
         descriptionEditText = binding.editTextDescription;
         dueDateTime = binding.TextDueDateTime;
         priorityRadioGroup = binding.priorityLevelRadioGroup;
-        reminderCheckBox = binding.checkBoxRemider;
         completionCheckBox = binding.checkBoxCompleted;
         canEditCheckBox = binding.checkBoxCanEdit;
         canDeleteCheckBox = binding.checkBoxCanDelete;
@@ -87,11 +86,10 @@ public class EditTaskActivity extends AppCompatActivity {
             int priority = cursor.getInt(4);
             boolean canEdit = cursor.getInt(5) == 1;
             boolean canDelete = cursor.getInt(6) == 1;
-            boolean setReminder = cursor.getInt(7) == 1;
             boolean completionStatus = cursor.getInt(8) == 1;
 
             // Create a new Task object
-            task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+            task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, completionStatus);
 
             // Populate the fields with task data
             titleEditText.setText(taskTitle);
@@ -113,7 +111,6 @@ public class EditTaskActivity extends AppCompatActivity {
             dateTimeButton.setOnClickListener(v -> showDateTimePicker());
 
             // Set reminder and completion status
-            reminderCheckBox.setChecked(setReminder);
             completionCheckBox.setChecked(completionStatus);
             canEditCheckBox.setChecked(canEdit);
             canDeleteCheckBox.setChecked(canDelete);
@@ -201,7 +198,6 @@ public class EditTaskActivity extends AppCompatActivity {
         }
         task.setCanEdit(canEditCheckBox.isChecked());
         task.setCanDelete(canDeleteCheckBox.isChecked());
-        task.setSetReminder(reminderCheckBox.isChecked());
         task.setCompleted(completionCheckBox.isChecked());
 
         // Open the database, update the task, and close the database

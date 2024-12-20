@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 import com.example.testnavigation.ui.profile.ProfileFragment;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
@@ -86,21 +84,12 @@ public class HomeActivity extends AppCompatActivity {
                 userNameTextView.setText(userFirstName + " " + userLastName);
         }
 
-//        darkModeSwitch = findViewById(R.id.darkThemeSwitch);
-
-//        applySavedTheme();
-
         // Set up NavigationController and UI
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         Context context = this;
-
-//        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            applyDarkMode(isChecked);
-//        });
-
 
         // Setup Navigation Item Selected Listener
         navigationView.setNavigationItemSelectedListener(item -> {

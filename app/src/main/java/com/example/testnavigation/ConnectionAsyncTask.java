@@ -53,7 +53,7 @@ public class ConnectionAsyncTask extends AsyncTask<String, String, String> {
 
         for (Task task : tasks) {
             Log.d("Task", task.toString());
-            dataBaseHelper.insertTask(task.getTitle(), task.getDescription(), task.getDueDate(), task.getPriority(), task.isCanEdit(), task.isCanDelete(), task.isSetReminder(), task.isCompleted(), task.getUserEmail());
+            dataBaseHelper.insertTask(task.getTitle(), task.getDescription(), task.getDueDate(), task.getPriority(), task.isCanEdit(), task.isCanDelete(), task.isCompleted(), task.getUserEmail());
         }
     }
 }

@@ -2,7 +2,6 @@ package com.example.testnavigation;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -48,9 +47,6 @@ public class SharedPrefManager {
     public boolean applySavedTheme(Context context) {
 
         sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, SHARED_PREF_PRIVATE);
-
-//        boolean test = sharedPreferences.getBoolean("darkTheme", false);
-//        Log.d("test", "test = " + test);
 
         if (sharedPreferences.getBoolean("darkTheme", false)) {
             // Apply the dark theme

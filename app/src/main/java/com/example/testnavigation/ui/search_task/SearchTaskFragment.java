@@ -114,10 +114,9 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
                     int priority = cursor.getInt(4);
                     boolean canEdit = cursor.getInt(5) == 1;
                     boolean canDelete = cursor.getInt(6) == 1;
-                    boolean setReminder = cursor.getInt(7) == 1;
-                    boolean completionStatus = cursor.getInt(8) == 1;
+                    boolean completionStatus = cursor.getInt(7) == 1;
 
-                    Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+                    Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, completionStatus);
                     taskList.add(task);
                 }
 
@@ -246,7 +245,6 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
         // Define additional task attributes
         String editable = task.isCanEdit() ? "Yes" : "No";
         String deletable = task.isCanDelete() ? "Yes" : "No";
-        String reminderSet = task.isSetReminder() ? "Yes" : "No";
         String completedStatus = task.isCompleted() ? "Completed" : "Not Completed";
 
         // Prepare the text including all task details
@@ -256,7 +254,6 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
                 "\nPriority: " + priorityLabel +
                 "\nEditable: " + editable +
                 "\nDeletable: " + deletable +
-                "\nReminder Set: " + reminderSet +
                 "\nCompletion Status: " + completedStatus;
 
         // Put the extended text into the intent
@@ -325,10 +322,9 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
             int priority = cursor.getInt(4);
             boolean canEdit = cursor.getInt(5) == 1;
             boolean canDelete = cursor.getInt(6) == 1;
-            boolean setReminder = cursor.getInt(7) == 1;
-            boolean completionStatus = cursor.getInt(8) == 1;
+            boolean completionStatus = cursor.getInt(7) == 1;
 
-            updatedTask = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+            updatedTask = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, completionStatus);
             cursor.close();
         }
         return updatedTask;

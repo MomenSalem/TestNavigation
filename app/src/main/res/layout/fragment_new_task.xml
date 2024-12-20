@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.new_task.NewTaskFragment" >
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    tools:context=".ui.new_task.NewTaskFragment">
 
     <TextView
         android:id="@+id/textView15"
@@ -15,6 +17,7 @@
         android:gravity="center"
         android:paddingTop="20dp"
         android:text="Adding New Task"
+        android:textColorHighlight="#FFFFFF"
         android:textSize="25dp"
         android:textStyle="bold" />
 
@@ -83,7 +86,7 @@
             android:fontFamily="serif-monospace"
             android:paddingTop="10dp"
             android:text="Select Due Date and Time"
-            android:textColor="@color/black"
+            android:textColor="@color/linkColor"
             android:textSize="18dp"
             android:textStyle="bold" />
 
@@ -247,7 +250,7 @@
             android:background="@drawable/button_border"
             android:fontFamily="serif-monospace"
             android:text="Add Task"
-            android:textColor="@color/black"
+            android:textColor="@color/linkColor"
             android:textSize="18dp"
             android:textStyle="bold" />
 
@@ -259,7 +262,7 @@
             android:background="@drawable/button_border"
             android:fontFamily="serif-monospace"
             android:text="Get Ready Tasks"
-            android:textColor="@color/black"
+            android:textColor="@color/teal_200"
             android:textSize="18dp"
             android:textStyle="bold" />
     </LinearLayout>

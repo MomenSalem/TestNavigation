@@ -3,7 +3,10 @@ package com.example.testnavigation.ui.new_task;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.AlarmClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,8 @@ import com.example.testnavigation.Task;
 import com.example.testnavigation.databinding.FragmentNewTaskBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 
@@ -97,7 +102,36 @@ public class NewTaskFragment extends Fragment {
                     priority = 2;
                 }
                 // Add the task to the database
-                dataBaseHelper.insertTask(taskTitle, taskDescription, dueDateAndTime, priority, editableTask, deletableTask, reminderStatus, completionStatus, userEmail);
+                dataBaseHelper.insertTask(taskTitle, taskDescription, dueDateAndTime, priority, editableTask, deletableTask, completionStatus, userEmail);
+                if (reminderStatus) {
+                    // Define the formatter
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+                    // Parse the string into a LocalDateTime object
+                    LocalDateTime dateTime = LocalDateTime.parse(dueDateAndTime, formatter);
+
+                    // Extract hours and minutes
+                    int hours = dateTime.getHour();
+                    int minutes = dateTime.getMinute();
+
+                    Log.d("Basheer", "Hours: " + hours);
+                    Log.d("Basheer", "Minutes: " + minutes);
+                    // Create an intent to set an alarm
+                    Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+                    intent.putExtra(AlarmClock.EXTRA_HOUR, hours);
+                    intent.putExtra(AlarmClock.EXTRA_MINUTES, minutes);
+                    intent.putExtra(AlarmClock.EXTRA_MESSAGE, "Todo Task (" + taskTitle + ")");
+                    intent.putExtra(AlarmClock.EXTRA_SKIP_UI, false);  // Skip UI if you don't want the user to confirm the alarm settings
+
+                    // Check if the device supports this action
+                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        Log.d("Basheer", "Intent is not null");
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this.getContext(), "No app can handle this action", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
                 // Make a toast message
                 showToastMessage("Task added successfully!");
 
@@ -135,8 +169,6 @@ public class NewTaskFragment extends Fragment {
         if (radioButton != null) {
             priorityLevel = radioButton.getText().toString();
         }
-//        // show the priority level in a Toast message
-//        showToastMessage("Priority Level: " + priorityLevel);
     }
 
     private String getData(EditText editText) {
@@ -156,7 +188,7 @@ public class NewTaskFragment extends Fragment {
                                 // Combine date and time
                                 String dueDateTime = String.format("%04d-%02d-%02d %02d:%02d", year, monthOfYear + 1, dayOfMonth, hourOfDay, minute);
                                 dueDateTimeTextView.setText(dueDateTime);
-                                this.dueDateAndTime = dueDateTime;
+                                dueDateAndTime = dueDateTime;
                             },
                             calendar.get(Calendar.HOUR_OF_DAY),
                             calendar.get(Calendar.MINUTE),

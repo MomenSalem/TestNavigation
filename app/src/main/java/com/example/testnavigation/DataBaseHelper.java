@@ -25,7 +25,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "priority INTEGER, " + // "0 -> High", "1 -> Medium", "2 -> Low"
                 "can_edit INTEGER, " + // 0 for false, 1 for true
                 "can_delete INTEGER, " + // 0 for false, 1 for true
-                "set_reminder INTEGER, " + // 0 for false, 1 for true
                 "completion_status INTEGER, " +// 0 for incomplete, 1 for complete
                 "user_email TEXT, " +
                 "FOREIGN KEY (user_email) REFERENCES user(EMAIL_ADDRESS) ON DELETE CASCADE ON UPDATE CASCADE" + ")");
@@ -90,7 +89,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // Insert task
     public void insertTask(String task_title, String task_description, String due_date, int priority,
                            boolean can_edit, boolean can_delete,
-                           boolean set_reminder, boolean completion_status, String user_email) {
+                           boolean completion_status, String user_email) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("task_title", task_title);
@@ -99,20 +98,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put("priority", priority);
         contentValues.put("can_edit", can_edit ? 1 : 0);
         contentValues.put("can_delete", can_delete ? 1 : 0);
-        contentValues.put("set_reminder", set_reminder ? 1 : 0);
         contentValues.put("completion_status", completion_status ? 1 : 0);
         contentValues.put("user_email", user_email);
         long id = db.insert("tasks", null, contentValues);
 
         if (id != -1) {
             // Task successfully inserted
-            new Task(id, task_title, task_description, due_date, priority, can_edit, can_delete, set_reminder, completion_status, user_email);
+            new Task(id, task_title, task_description, due_date, priority, can_edit, can_delete, completion_status, user_email);
         } else {
             // Handle insertion failure (e.g., foreign key constraint violation)
             Log.e("DB_ERROR", "Failed to insert task. Check foreign key constraint.");
         }
-//        db.close();
-//        db.execSQL("DELETE FROM tasks");
+        db.close();
     }
 
     public Cursor getTaskByIdForUser(long taskId, String userEmail) {
@@ -156,18 +153,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put("priority", task.getPriority());
         contentValues.put("can_edit", task.isCanEdit() ? 1 : 0);
         contentValues.put("can_delete", task.isCanDelete() ? 1 : 0);
-        contentValues.put("set_reminder", task.isSetReminder() ? 1 : 0);
         contentValues.put("completion_status", task.isCompleted() ? 1 : 0);
 
         // Update the task with the given ID
         db.update("tasks", contentValues, "id = ?", new String[]{String.valueOf(task.getId())});
     }
-
-//    // Get completed tasks
-//    public Cursor getTasksByPriority(String priority) {
-//        SQLiteDatabase db = getReadableDatabase();
-//        return db.rawQuery("SELECT * FROM tasks WHERE priority = ?", new String[]{priority});
-//    }
 
 
     // Get tasks by completion status

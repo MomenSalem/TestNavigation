@@ -8,7 +8,6 @@ public class Task {
     private int priority;
     private boolean canEdit;
     private boolean canDelete;
-    private boolean setReminder;
     private boolean isCompleted;
     private String userEmail;
 
@@ -16,7 +15,7 @@ public class Task {
 
     }
 
-    public Task(long id, String title, String description, String dueDate, int priority, boolean canEdit, boolean canDelete, boolean setReminder, boolean isCompleted) {
+    public Task(long id, String title, String description, String dueDate, int priority, boolean canEdit, boolean canDelete, boolean isCompleted) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -24,11 +23,10 @@ public class Task {
         this.priority = priority;
         this.canEdit = canEdit;
         this.canDelete = canDelete;
-        this.setReminder = setReminder;
         this.isCompleted = isCompleted;
     }
 
-    public Task(long id, String title, String description, String dueDate, int priority, boolean canEdit, boolean canDelete, boolean setReminder, boolean isCompleted, String userEmail ) {
+    public Task(long id, String title, String description, String dueDate, int priority, boolean canEdit, boolean canDelete, boolean isCompleted, String userEmail ) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -36,7 +34,6 @@ public class Task {
         this.priority = priority;
         this.canEdit = canEdit;
         this.canDelete = canDelete;
-        this.setReminder = setReminder;
         this.isCompleted = isCompleted;
         this.userEmail = userEmail;
     }
@@ -83,9 +80,6 @@ public class Task {
         this.priority = priority;
     }
 
-    public boolean isSetReminder() {
-        return setReminder;
-    }
 
     public boolean isCanEdit() {
         return canEdit;
@@ -103,9 +97,6 @@ public class Task {
         this.canDelete = canDelete;
     }
 
-    public void setSetReminder(boolean setReminder) {
-        this.setReminder = setReminder;
-    }
 
     public String getTitle() {
         return title;
@@ -129,7 +120,6 @@ public class Task {
                 ", priority=" + priority +
                 ", canEdit=" + canEdit +
                 ", canDelete=" + canDelete +
-                ", setReminder=" + setReminder +
                 ", isCompleted=" + isCompleted +
                 ", userEmail='" + userEmail + '\'' +
                 '}';

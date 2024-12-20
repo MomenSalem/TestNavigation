@@ -38,15 +38,7 @@ public class MainActivity extends AppCompatActivity {
         // Shared Preferences
         sharedPrefManager = SharedPrefManager.getInstance(MainActivity.this);
         darkModeSwitch = findViewById(R.id.darkThemeSwitch);
-//        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
-//        boolean test = sharedPrefManager.readBoolean("darkTheme", false);
-//        if (test){
-//            applyDarkMode(true);
-//            darkModeSwitch.setChecked(true);
-//        }else{
-//            applyDarkMode(false);
-//            darkModeSwitch.setChecked(false);
-//        }
+        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
 
         darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             applyDarkMode(isChecked);
@@ -81,18 +73,6 @@ public class MainActivity extends AppCompatActivity {
                 dataBaseHelper.close();
             }
         }
-//        // Get the current local time
-//        LocalDateTime now = LocalDateTime.now();
-//
-//        // Format the time as a string (e.g., "2024-12-11 15:30:45")
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        String formattedTime = now.format(formatter);
-
-//        dataBaseHelper.insertTask("Midterm100", "Computer Vision", "2024-12-11 06:00", "High", true, true, false, true);
-//        dataBaseHelper.insertTask("Midterm101", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
-//        dataBaseHelper.insertTask("Midterm102", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
-//        dataBaseHelper.insertTask("Midterm103", "Computer Vision", "2024-12-11 06:00", "High", false, true, false, true);
-
 
         // if the user press on submit, we should check if it is the data base
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -148,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
     private void goToSignUpActivity() {
         Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void goToHomeActivity() {
@@ -155,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         intent.putExtra("user_primary_key", emailEditText.getText().toString());
         startActivity(intent);
+        finish();
     }
 
     private void showAlertDialog(String alertMessage) {

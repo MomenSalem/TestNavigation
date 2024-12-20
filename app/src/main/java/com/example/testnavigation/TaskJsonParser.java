@@ -37,7 +37,6 @@ public class TaskJsonParser {
                 }
 
                 task.setCanEdit(jsonObject.getBoolean("completion_status"));
-                task.setSetReminder(jsonObject.getBoolean("reminder_icon"));
                 task.setCanEdit(jsonObject.getBoolean("edit"));
                 task.setCanDelete(jsonObject.getBoolean("delete"));
                 task.setUserEmail(jsonObject.getString("email_address"));

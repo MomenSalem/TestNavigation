@@ -170,6 +170,7 @@ public class SignUpActivity extends AppCompatActivity {
         Intent intent = new Intent(SignUpActivity.this, HomeActivity.class);
         intent.putExtra("user_primary_key", emailAddressEditText.getText().toString());
         startActivity(intent);
+        finish();
     }
 
     private void colorizeInputInRed(EditText text) {
