@@ -3,13 +3,10 @@ package com.example.testnavigation.ui.today_task;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -22,16 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testnavigation.DataBaseHelper;
 import com.example.testnavigation.EditTaskActivity;
-import com.example.testnavigation.R;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
 import com.example.testnavigation.databinding.FragmentTodayBinding;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
 import com.example.testnavigation.SharedPrefManager;
 
-import nl.dionsegijn.konfetti.core.Party;
 import nl.dionsegijn.konfetti.core.PartyFactory;
 import nl.dionsegijn.konfetti.core.emitter.Emitter;
 import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
@@ -39,7 +35,7 @@ import nl.dionsegijn.konfetti.core.models.Shape;
 import nl.dionsegijn.konfetti.core.models.Size;
 import nl.dionsegijn.konfetti.xml.KonfettiView;
 
-public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
+public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener {
 
     private FragmentTodayBinding binding;
     SharedPrefManager sharedPrefManager;
@@ -89,18 +85,24 @@ public class TodayTaskFragment extends Fragment implements TaskAdapter.OnTaskInt
                 boolean completionStatus = cursor.getInt(8) == 1;
 
                 // Create a Task object and add it to the list
-//                Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
-//                taskList.add(task);
+                Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+                taskList.add(task);
             } while (cursor.moveToNext());
         }
         filteredTaskList = new ArrayList<>(taskList);
         cursor.close();
-        // Set up the RecyclerView and adapter
-        adapter = new TaskAdapter(this.getContext(), filteredTaskList, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        checkAllTasksCompleted();
-        setupSearchView(searchView);
+        // If no tasks are found, show a message
+        if (taskList.isEmpty()) {
+            Toast.makeText(this.getContext(), "There are no Tasks for Today !", Toast.LENGTH_SHORT).show();
+        } else {
+            searchView.setVisibility(View.VISIBLE);
+            // Set up the RecyclerView and adapter
+            adapter = new TaskAdapter(this.getContext(), filteredTaskList, this);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+            checkAllTasksCompleted();
+            setupSearchView(searchView);
+        }
         return root;
     }
 

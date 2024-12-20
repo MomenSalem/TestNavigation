@@ -131,18 +131,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // Get all tasks
     public Cursor getAllTasks(String userEmail) {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM tasks WHERE user_email = ? ORDER BY DATE(due_date) ASC;", new String[]{userEmail});
+        return db.rawQuery("SELECT * FROM tasks WHERE user_email = ? ORDER BY DATE(due_date) ASC, priority ASC;", new String[]{userEmail});
     }
 
     // Get all completed tasks
     public Cursor getCompletedTasks(String userEmail) {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM tasks WHERE completion_status = 1 and user_email = ? ORDER BY DATE(due_date) ASC;", new String[]{userEmail});
+        return db.rawQuery("SELECT * FROM tasks WHERE completion_status = 1 and user_email = ? ORDER BY DATE(due_date) ASC, priority ASC;", new String[]{userEmail});
     }
 
     public Cursor getTasksWithinDateRange(String startDate, String endDate, String userEmail) {
         SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * FROM tasks WHERE DATE(due_date) BETWEEN ? AND ? and user_email = ? ORDER BY DATE(due_date) ASC";
+        String query = "SELECT * FROM tasks WHERE DATE(due_date) BETWEEN ? AND ? and user_email = ? ORDER BY DATE(due_date) ASC, priority ASC";
         return db.rawQuery(query, new String[]{startDate, endDate, userEmail});
     }
 

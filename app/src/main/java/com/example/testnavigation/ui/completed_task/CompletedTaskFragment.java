@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,7 +27,7 @@ import com.example.testnavigation.databinding.FragmentCompletedBinding;
 
 import java.util.ArrayList;
 
-public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
+public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener {
 
     private FragmentCompletedBinding binding;
     SharedPrefManager sharedPrefManager;
@@ -79,19 +78,24 @@ public class CompletedTaskFragment extends Fragment implements TaskAdapter.OnTas
                 boolean completionStatus = cursor.getInt(8) == 1;
 
                 // Create a Task object and add it to the list
-//                Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
-//                taskList.add(task);
+                Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+                taskList.add(task);
             } while (cursor.moveToNext());
         }
         filteredTaskList = new ArrayList<>(taskList);
         cursor.close();
 
-        // Set up the RecyclerView and adapter
-        adapter = new TaskAdapter(this.getContext(), filteredTaskList, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        if (taskList.isEmpty()) {
+            Toast.makeText(this.getContext(), "There are no Completed Tasks !", Toast.LENGTH_SHORT).show();
+        } else {
+            searchView.setVisibility(View.VISIBLE);
+            // Set up the RecyclerView and adapter
+            adapter = new TaskAdapter(this.getContext(), filteredTaskList, this);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-        setupSearchView(searchView);
+            setupSearchView(searchView);
+        }
         return root;
     }
 

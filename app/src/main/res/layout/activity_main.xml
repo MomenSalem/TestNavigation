@@ -13,7 +13,7 @@
         <!-- Title and Image -->
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/userNameTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="serif-monospace"

@@ -4,18 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.testnavigation.DataBaseHelper;
 import com.example.testnavigation.DateSeparatorDecoration;
 import com.example.testnavigation.EditTaskActivity;
-import com.example.testnavigation.R;
 import com.example.testnavigation.SharedPrefManager;
 import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
@@ -31,7 +27,7 @@ import com.example.testnavigation.databinding.FragmentAllTasksBinding;
 
 import java.util.ArrayList;
 
-public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
+public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener {
 
     private FragmentAllTasksBinding binding;
     SharedPrefManager sharedPrefManager;
@@ -80,7 +76,7 @@ public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInte
                 boolean setReminder = cursor.getInt(7) == 1;
                 boolean completionStatus = cursor.getInt(8) == 1;
 
-//                 Create a Task object and add it to the list
+//              Create a Task object and add it to the list
                 Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
                 taskList.add(task);
             } while (cursor.moveToNext());
@@ -88,12 +84,20 @@ public class AllTasksFragment extends Fragment implements TaskAdapter.OnTaskInte
         filteredTaskList = new ArrayList<>(taskList);
         cursor.close();
 
-        // Set up the RecyclerView and adapter
-        adapter = new TaskAdapter(this.getContext(), filteredTaskList, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        // If no tasks are found, show a message
+        if (taskList.isEmpty()) {
+            Toast.makeText(this.getContext(), "There are no Tasks :(", Toast.LENGTH_SHORT).show();
+        } else {
+            searchView.setVisibility(View.VISIBLE);
 
-        setupSearchView(searchView);
+            // Set up the RecyclerView and adapter
+            adapter = new TaskAdapter(this.getContext(), filteredTaskList, this);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+            setupSearchView(searchView);
+        }
+
         return root;
     }
 

@@ -6,12 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -29,14 +26,13 @@ import com.example.testnavigation.Task;
 import com.example.testnavigation.TaskAdapter;
 import com.example.testnavigation.databinding.FragmentSearchTaskBinding;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener{
+public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskInteractionListener {
 
     private FragmentSearchTaskBinding binding;
     SharedPrefManager sharedPrefManager;
@@ -121,15 +117,16 @@ public class SearchTaskFragment extends Fragment implements TaskAdapter.OnTaskIn
                     boolean setReminder = cursor.getInt(7) == 1;
                     boolean completionStatus = cursor.getInt(8) == 1;
 
-//                    Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
-//                    taskList.add(task);
+                    Task task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+                    taskList.add(task);
                 }
 
                 filteredTaskList = new ArrayList<>(taskList);
 
                 // If no tasks are found, show a message
                 if (taskList.isEmpty()) {
-                    Toast.makeText(context, "No tasks found for the selected date period", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "No Tasks found for the selected date period", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 searchView.setVisibility(View.VISIBLE);
                 // Set up the RecyclerView and adapter

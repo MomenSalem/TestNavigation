@@ -1,5 +1,6 @@
 package com.example.testnavigation;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -7,7 +8,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.testnavigation.databinding.ActivityEditTaskBinding;
 
 import java.util.Calendar;
@@ -89,8 +90,8 @@ public class EditTaskActivity extends AppCompatActivity {
             boolean setReminder = cursor.getInt(7) == 1;
             boolean completionStatus = cursor.getInt(8) == 1;
 
-//            // Create a new Task object
-//            task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
+            // Create a new Task object
+            task = new Task(id, taskTitle, taskDescription, dueDate, priority, canEdit, canDelete, setReminder, completionStatus);
 
             // Populate the fields with task data
             titleEditText.setText(taskTitle);
@@ -98,7 +99,7 @@ public class EditTaskActivity extends AppCompatActivity {
             dueDateTime.setText(dueDate);
 
             // Set priority level
-            switch(priority){
+            switch (priority) {
                 case 0:
                     priorityRadioGroup.check(R.id.radioHigh);
                     break;
@@ -129,8 +130,7 @@ public class EditTaskActivity extends AppCompatActivity {
                             .show());
 
             cancelButton.setOnClickListener(v -> finish());
-        }
-        else{
+        } else {
             // if there is an error close the activity
             finish();
         }
@@ -193,13 +193,12 @@ public class EditTaskActivity extends AppCompatActivity {
         int selectedId = priorityRadioGroup.getCheckedRadioButtonId();
 
         if (selectedId == R.id.radioHigh) {
-            task.setPriority(0);  
+            task.setPriority(0);
         } else if (selectedId == R.id.radioMedium) {
             task.setPriority(1);
         } else if (selectedId == R.id.radioLow) {
             task.setPriority(2);
         }
-        Log.d("Momen", String.valueOf(task.getPriority()));
         task.setCanEdit(canEditCheckBox.isChecked());
         task.setCanDelete(canDeleteCheckBox.isChecked());
         task.setSetReminder(reminderCheckBox.isChecked());
@@ -222,6 +221,14 @@ public class EditTaskActivity extends AppCompatActivity {
                 dataBaseHelper.close();
             }
         }
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        // suppress lint warning
+        // noinspection SuperCallOnBackPressed
+        // Do nothing.
+        // not return to the previous activity using the back button in phone
     }
 
 }

@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Shared Preferences
-        sharedPrefManager = SharedPrefManager.getInstance(this);
-        darkModeSwitch = findViewById(R.id.darkThemeSwitch);
-        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
 
+        // Shared Preferences
+        sharedPrefManager = SharedPrefManager.getInstance(MainActivity.this);
+        darkModeSwitch = findViewById(R.id.darkThemeSwitch);
+//        darkModeSwitch.setChecked(sharedPrefManager.applySavedTheme(this));
 //        boolean test = sharedPrefManager.readBoolean("darkTheme", false);
 //        if (test){
 //            applyDarkMode(true);
@@ -158,13 +157,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    void showAlertDialog(String alertMessage) {
+    private void showAlertDialog(String alertMessage) {
         new AlertDialog.Builder(MainActivity.this).setMessage(alertMessage)
                 .setPositiveButton("OK", (dialog, which) -> { /* Handle yes */ })
                 .show();
     }
 
-    void showToastMessage(String s) {
+    private void showToastMessage(String s) {
         Toast toast = Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT);
         toast.show();
     }
@@ -203,5 +202,6 @@ public class MainActivity extends AppCompatActivity {
             rememberMeCheckBox.setChecked(true);
         }
     }
+
 
 }

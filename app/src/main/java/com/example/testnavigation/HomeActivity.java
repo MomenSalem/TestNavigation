@@ -1,16 +1,18 @@
 package com.example.testnavigation;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.testnavigation.ui.profile.ProfileFragment;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -42,9 +44,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show());
 
         // Set up AppBarConfiguration
         DrawerLayout drawer = binding.drawerLayout;
@@ -59,6 +58,33 @@ public class HomeActivity extends AppCompatActivity {
         String userid = intent.getStringExtra("user_primary_key");
         sharedPrefManager = SharedPrefManager.getInstance(this);
         sharedPrefManager.writeString("user_primary_key", userid);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView userNameTextView = headerView.findViewById(R.id.userNameTV);
+        TextView userEmailTextView = headerView.findViewById(R.id.emailTV);
+
+        // Now you can set the text for these TextViews
+        userEmailTextView.setText(userid);
+        // get the user name from database
+        try {
+            dataBaseHelper = new DataBaseHelper(this, "final_project_db", null, 1);
+            // Use the database helper
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (dataBaseHelper != null) {
+                // Assuming DataBaseHelper has a method to close the database or cleanup
+                dataBaseHelper.close();
+            }
+        }
+        Cursor cursor = dataBaseHelper.getUser(userid);
+
+        // Loop through the cursor and add tasks to the ArrayList
+        if (cursor.moveToFirst()) {
+                String userFirstName = cursor.getString(1);
+                String userLastName = cursor.getString(2);
+                userNameTextView.setText(userFirstName + " " + userLastName);
+        }
 
 //        darkModeSwitch = findViewById(R.id.darkThemeSwitch);
 
@@ -75,9 +101,6 @@ public class HomeActivity extends AppCompatActivity {
 //            applyDarkMode(isChecked);
 //        });
 
-//        sharedPrefManager = SharedPrefManager.getInstance(this);
-//        String userid = sharedPrefManager.readString("user_primary_key", "no way");
-//        Log.d("user", "The user id is = " + userid);
 
         // Setup Navigation Item Selected Listener
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -171,5 +194,14 @@ public class HomeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        // suppress lint warning
+        // noinspection SuperCallOnBackPressed
+        // Do nothing.
+        // not return to the previous activity using the back button in phone
     }
 }

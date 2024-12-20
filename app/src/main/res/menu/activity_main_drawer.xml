@@ -24,8 +24,7 @@
         <item
             android:id="@+id/nav_searchT"
             android:icon="@drawable/search_task"
-            android:title="Search"
-            app:actionViewClass="android.widget.SearchView" />
+            android:title="Search" />
         <item
             android:id="@+id/nav_prof"
             android:icon="@drawable/profile_ic"

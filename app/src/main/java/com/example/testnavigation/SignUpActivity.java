@@ -1,5 +1,6 @@
 package com.example.testnavigation;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -178,6 +179,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void goToMainActivity() {
         Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void addToDB(EditText emailAddressEditText, EditText firstNameEditText, EditText lastNameEditText, EditText passwordEditText) {
@@ -254,5 +256,13 @@ public class SignUpActivity extends AppCompatActivity {
             }
             cursor.close();
         }
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        // suppress lint warning
+        // noinspection SuperCallOnBackPressed
+        // Do nothing.
+        // not return to the previous activity using the back button in phone
     }
 }
